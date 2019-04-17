@@ -1,2 +1,3 @@
-# Moviles
-Repositorio para proyectos de desarrollo de dispositivos móviles.
+# RESTaurantes
+
+App móvil y backoffice web para agregar y encontrar restaurantes.
