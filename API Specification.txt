@@ -1,0 +1,117 @@
+- user sign up:
+    POST /users/:name/:email/:password
+    {
+        success: true
+    }
+
+- full user login:
+    POST sessions/:email/:password/:type <- type must be "ADMINISTRATOR" or "REGULAR"
+    {
+        success: true,
+        session: string
+    }
+
+- session login:
+    PUT /sessions/:id
+    {
+        success: true,
+        session: string
+    }
+    
+- session logout:
+    DELETE /sessions/:id
+    {
+        success: true,
+        session: string
+    }
+
+- forgot password:
+    GET /users/:email
+    {
+        success: true
+    }
+    
+- get restaurant data:
+    GET /restaurants/:query?
+    {
+        [
+            {
+                id: int,
+                name: string,
+                type: string, <- this refers to food type, like fast food or gourmet
+                price: string, <- values restricted to "CHEAP", "AFFORDABLE", "EXPENSIVE"
+                score: float, <- 0 to 5, up to 2 decimals
+                location: {
+                    latitude: float,
+                    longitude: float
+                },
+                schedule: [
+                    monday:
+                    {
+                        start: {
+                            hour: int, <- 0 to 23
+                            minute: int <- 0 to 59
+                        }
+                        end: {
+                            hour: int, <- 0 to 23
+                            minute: int <- 0 to 59
+                        }
+                    }
+                    ...same for every other day of the week
+                ],
+                contacts: [
+                    {
+                        name: string,
+                        value: string
+                    },
+                    ...n contacts
+                ],
+                images: [string], <- Image URLs hosted somewhere
+                added_by: string, <- email of adder
+                added: date
+            },
+            ...n restaurants
+        ]
+    }
+
+    The query parameter is a JSON stringified and WILL be parsed upon arrival.
+    If the query parameter is NOT given (GET /restaurants), all restaurants are returned.
+    The JSON may ommit any of it's children upon arrival, and they can come in any order.
+    It should have the following structure:
+
+    {
+        id: int, <- if you query by id you'll only ever get one or no restaurants
+        name: string,
+        type: string, <- this refers to food type, like fast food or gourmet
+        price: string, <- values restricted to "CHEAP", "AFFORDABLE", "EXPENSIVE"
+        score: int, <- 0 to 5
+        location: {
+            latitude: float,
+            longitude: float,
+            radiusSize: float
+        }
+    }
+
+- get single restaurant:
+    GET /restaurants/:id
+
+
+    POST new restaurant
+    POST restaurant score
+    POST restaurant image
+    POST comment under restaurant
+
+ - Backoffice:
+    POST delete a restaurant
+    POST update a restaurant
+    GET  user list
+
+ - Errors:
+    {
+        success: false,
+        errors: [
+            ...n errors
+        ]
+    }
+
+HTTP Methods: GET, POST, PUT, DELETE
