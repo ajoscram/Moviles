@@ -5,7 +5,7 @@
     }
 
 - full user login:
-    POST sessions/:email/:password/:type <- type must be "ADMINISTRATOR" or "REGULAR"
+    POST /sessions/:email/:password/:type <- type must be "ADMINISTRATOR" or "REGULAR"
     {
         success: true,
         session: string
@@ -17,7 +17,7 @@
         success: true,
         session: string
     }
-    
+
 - session logout:
     DELETE /sessions/:id
     {
@@ -30,9 +30,18 @@
     {
         success: true
     }
-    
-- get restaurant data:
-    GET /restaurants/:query?
+
+----------------------------------------------------------------------------------------------------------------
+From this point on, every single one of these methods require a session token to be given via the HTML's body.
+It must be embedded in a JSON, which looks like this:
+{
+    session: string
+}
+If this JSON is not found on ANY request of the requests specified below, an error is returned.
+----------------------------------------------------------------------------------------------------------------
+
+- get all restaurants:
+    GET /restaurants/all/:query?
     {
         [
             {
@@ -46,8 +55,7 @@
                     longitude: float
                 },
                 schedule: [
-                    monday:
-                    {
+                    monday: {
                         start: {
                             hour: int, <- 0 to 23
                             minute: int <- 0 to 59
@@ -75,12 +83,12 @@
     }
 
     The query parameter is a JSON stringified and WILL be parsed upon arrival.
-    If the query parameter is NOT given (GET /restaurants), all restaurants are returned.
+    If the query parameter is NOT given (GET /restaurants/all), all restaurants are returned.
     The JSON may ommit any of it's children upon arrival, and they can come in any order.
     It should have the following structure:
 
     {
-        id: int, <- if you query by id you'll only ever get one or no restaurants
+        id: int,
         name: string,
         type: string, <- this refers to food type, like fast food or gourmet
         price: string, <- values restricted to "CHEAP", "AFFORDABLE", "EXPENSIVE"
@@ -94,24 +102,177 @@
 
 - get single restaurant:
     GET /restaurants/:id
+    {
+        id: int,
+        name: string,
+        type: string, <- this refers to food type, like fast food or gourmet
+        price: string, <- values restricted to "CHEAP", "AFFORDABLE", "EXPENSIVE"
+        score: float, <- 0 to 5, up to 2 decimals
+        location: {
+            latitude: float,
+            longitude: float
+        },
+        schedule: [
+            monday: {
+                start: {
+                    hour: int, <- 0 to 23
+                    minute: int <- 0 to 59
+                }
+                end: {
+                    hour: int, <- 0 to 23
+                    minute: int <- 0 to 59
+                }
+            }
+            ...same for every other day of the week
+        ],
+        contacts: [
+            {
+                name: string,
+                value: string
+            },
+            ...n contacts
+        ],
+        images: [string], <- Image URLs hosted somewhere
+        added_by: string, <- email of adder
+        added: date
+    }
+
+- add new restaurant:
+    post /restaurants/:data
+    {
+        success: true
+    }
+
+    The data parameter is a JSON stringified and WILL be parsed upon arrival.
+    It MUST have the following structure:
+
+    {
+        name: string,
+        type: string, <- this refers to food type, like fast food or gourmet
+        price: string, <- values restricted to "CHEAP", "AFFORDABLE", "EXPENSIVE"
+        location: {
+            latitude: float,
+            longitude: float
+        },
+        schedule: [
+            monday: {
+                start: {
+                    hour: int, <- 0 to 23
+                    minute: int <- 0 to 59
+                }
+                end: {
+                    hour: int, <- 0 to 23
+                    minute: int <- 0 to 59
+                }
+            }
+            ...same for every other day of the week
+        ],
+        contacts: [
+            {
+                name: string,
+                value: string
+            },
+            ...n contacts
+        ]
+    }
+
+- scoring a restaurant:
+    POST /restaurants/scores/:restaurant/:score
+    {
+        success: true
+    }
+
+    The restaurant parameter refers to its id.
+    The score parameter must be a number between 0 and 5.
+
+- adding a restaurant's image:
+    POST /restaurants/images/:restaurant/:image
+    {
+        success: true
+    }
+
+    The restaurant parameter refers to its id.
+    The image parameter MUST BE DEFINED LATER ON.
+
+- adding a comment under a restaurant
+    POST /comments/:restaurant/:text
+    {
+        success: true
+    }
+
+    The restaurant parameter refers to a restaurant's id.
+    The text parameter is the text of the comment.
+
+----------------------------------------------------------------------------------------------------------------
+From this point on, session tokens handed will be checked for administrative rights. If the account is not an
+administrator and these methods are called an error will be returned.
+
+- delete a restaurant:
+    DELETE /restaurants/:id
+    {
+        success:true
+    }
+
+- update a restaurant's info
+    PUT /restaurants/:id/:data
+    {
+        success: true
+    }
+
+    The data parameter is a JSON stringified and will be parsed upon arrival.
+    The JSON may ommit any of it's children upon arrival, and they can come in any order.
+    It should have have the following structure:
+    {
+        name: string,
+        type: string, <- this refers to food type, like fast food or gourmet
+        price: string, <- values restricted to "CHEAP", "AFFORDABLE", "EXPENSIVE"
+        score: float, <- 0 to 5, up to 2 decimals
+        location: {
+            latitude: float,
+            longitude: float
+        },
+        schedule: [
+            monday: {
+                start: {
+                    hour: int, <- 0 to 23
+                    minute: int <- 0 to 59
+                }
+                end: {
+                    hour: int, <- 0 to 23
+                    minute: int <- 0 to 59
+                }
+            }
+            ...same for every other day of the week
+        ],
+        contacts: [
+            {
+                name: string,
+                value: string
+            },
+            ...n contacts
+        ]
+    }
 
 
-    POST new restaurant
-    POST restaurant score
-    POST restaurant image
-    POST comment under restaurant
-
- - Backoffice:
-    POST delete a restaurant
-    POST update a restaurant
-    GET  user list
+- get a list of all users:
+    GET  /users/all
+    {
+        success: true,
+        users:[
+            {
+                name: string,
+                email: string
+            },
+            ...n users
+        ]
+    }
 
  - Errors:
     {
         success: false,
-        errors: [
-            ...n errors
-        ]
+        error: string
     }
 
-HTTP Methods: GET, POST, PUT, DELETE
+    List of errors:
+
+    
