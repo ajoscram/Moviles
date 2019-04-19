@@ -146,7 +146,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         EMPTY_PARAMETER (a REST parameter was not given with a request or is an empty string)
         UNPARSABLE_JSON (the string received could not be parsed to a JSON)
-        INCORRECT_VALUE (a value in the key:value pairs does not hold the correct type)
+        INCORRECT_VALUE_TYPE (a value in the key:value pairs does not hold the correct type)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
         UNKNOWN_PRICE (the price isn't CHEAP, AFFORDABLE or EXPENSIVE)
         SCORE_OUT_OF_BOUNDS (the score is lower than 0 or greater than 5)
@@ -237,7 +237,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
         EMPTY_PARAMETER (a REST parameter was not given with a request or is an empty string)
         UNPARSABLE_JSON (the string received could not be parsed to a JSON)
         INCOMPLETE_JSON (the JSON is missing a field)
-        INCORRECT_VALUE (a value in the key:value pairs does not hold the correct type)
+        INCORRECT_VALUE_TYPE (a value in the key:value pairs does not hold the correct type)
         UNKNOWN_PRICE (the price isn't CHEAP, AFFORDABLE or EXPENSIVE)
         SCHEDULE_OUT_OF_BOUNDS (the schedule has an entry where the hours > 23 or < 0, or the minutes > 59 or < 0)
         SCHEDULE_UNKNOWN_DAY (the schedule includes a day with unknown name)
@@ -315,7 +315,7 @@ administrator and these methods are called an error will be returned.
     {
         name: string,
         type: string, <- this refers to food type, like fast food or gourmet
-        price: string, <- values restricted to "CHEAP", "AFFORDABLE", "EXPENSIVE"
+        price: string, <- values restricted to CHEAP, AFFORDABLE, EXPENSIVE
         score: float, <- 0 to 5, up to 2 decimals
         location: {
             latitude: float,
@@ -349,7 +349,7 @@ administrator and these methods are called an error will be returned.
         USER_IS_NOT_ADMINISTRATOR (the user attempted an action that can only be done from an administrator account)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
         UNPARSABLE_JSON (the string received could not be parsed to a JSON)
-        INCORRECT_VALUE (a value in the key:value pairs does not hold the correct type)
+        INCORRECT_VALUE_TYPE (a value in the key:value pairs does not hold the correct type)
         UNKNOWN_PRICE (the price isn't CHEAP, AFFORDABLE or EXPENSIVE)
         SCORE_OUT_OF_BOUNDS (the score is lower than 0 or greater than 5)
         SCHEDULE_OUT_OF_BOUNDS (the schedule has an entry where the hours > 23 or < 0, or the minutes > 59 or < 0)
