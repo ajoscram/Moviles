@@ -21,6 +21,7 @@ Errors look like this:
     error: string
 }
 ----------------------------------------------------------------------------------------------------------------
+
 - getting the system strings in a JSON file:
     GET /strings
     {
@@ -50,6 +51,7 @@ Errors look like this:
     Errors:
         EMPTY_PARAMETER (a REST parameter was not given with a request or is an empty string)
         EMAIL_USED (email is currently used by another account)
+        INCORRECT_EMAIL_FORMAT (the email is not in the form of person@somewhere.com)
 
 - user login:
     POST /users/sessions/:email/:password/:type <- type must be "ADMINISTRATOR" or "REGULAR"
