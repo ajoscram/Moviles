@@ -12,6 +12,8 @@ include this field, but it is always set to true. Clients should always check th
 an error when it is set to false.
 
 The error field holds any of the error strings described below, under each route's "Errors" section.
+There is one special type of error, given when a unhandled route is accessed:
+    UNHANDLED_ROUTE
 
 Errors look like this:
 {
@@ -19,6 +21,25 @@ Errors look like this:
     error: string
 }
 ----------------------------------------------------------------------------------------------------------------
+- getting the system strings in a JSON file:
+    GET /strings
+    {
+        success: true,
+        data: {
+            users: {
+                ...every user type
+            },
+            prices: {
+                ...every price type
+            },
+            days: {
+                ...every day of the week
+            },
+            errors: {
+                ...every possible error
+            }
+        }
+    }
 
 - user sign up:
     POST /users/:name/:email/:password
@@ -34,7 +55,9 @@ Errors look like this:
     POST /users/sessions/:email/:password/:type <- type must be "ADMINISTRATOR" or "REGULAR"
     {
         success: true,
-        session: string
+        data: {
+            session: string
+        }
     }
 
     Errors:
@@ -47,7 +70,9 @@ Errors look like this:
     PUT /users/sessions/:id
     {
         success: true,
-        session: string
+        data: {
+            session: string
+        }
     }
 
     Errors:
@@ -63,7 +88,7 @@ Errors look like this:
         EMPTY_PARAMETER (a REST parameter was not given with a request or is an empty string)
         UNKNOWN_SESSION (the session token given is not currently used in an active session)
 
-- forgot password:
+- user forgot password:
     GET /users/:email
     {
         success: true
@@ -81,117 +106,6 @@ It must be embedded in a JSON, which looks like this:
 }
 If this JSON is not found on ANY request of the requests specified below, an error is returned.
 ----------------------------------------------------------------------------------------------------------------
-
-- get all restaurants:
-    GET /restaurants/all/:query?
-    {
-        [
-            {
-                id: int,
-                name: string,
-                type: string, <- this refers to food type, like fast food or gourmet
-                price: string, <- values restricted to "CHEAP", "AFFORDABLE", "EXPENSIVE"
-                score: float, <- 0 to 5, up to 2 decimals
-                location: {
-                    latitude: float,
-                    longitude: float
-                },
-                schedule: [
-                    MONDAY: { <- available days: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
-                        start: {
-                            hour: int, <- 0 to 23
-                            minute: int <- 0 to 59
-                        }
-                        end: {
-                            hour: int, <- 0 to 23
-                            minute: int <- 0 to 59
-                        }
-                    }
-                    ...same for every other day of the week
-                ],
-                contacts: [
-                    {
-                        name: string,
-                        value: string
-                    },
-                    ...n contacts
-                ],
-                images: [string], <- Image URLs hosted somewhere
-                added_by: string, <- email of adder
-                added: date
-            },
-            ...n restaurants
-        ]
-    }
-
-    The query parameter is a JSON stringified and WILL be parsed upon arrival.
-    If the query parameter is NOT given (GET /restaurants/all), all restaurants are returned.
-    The JSON may ommit any of it's children upon arrival, and they can come in any order.
-    It should have the following structure:
-
-    {
-        id: int,
-        name: string,
-        type: string, <- this refers to food type, like fast food or gourmet
-        price: string, <- values restricted to CHEAP, AFFORDABLE, EXPENSIVE
-        score: int, <- 0 to 5
-        location: {
-            latitude: float,
-            longitude: float,
-            radiusSize: float
-        }
-    }
-
-    Errors:
-        UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
-        EMPTY_PARAMETER (a REST parameter was not given with a request or is an empty string)
-        UNPARSABLE_JSON (the string received could not be parsed to a JSON)
-        INCORRECT_VALUE_TYPE (a value in the key:value pairs does not hold the correct type)
-        UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
-        UNKNOWN_PRICE (the price isn't CHEAP, AFFORDABLE or EXPENSIVE)
-        SCORE_OUT_OF_BOUNDS (the score is lower than 0 or greater than 5)
-
-- get single restaurant:
-    GET /restaurants/:id
-    {
-        id: int,
-        name: string,
-        type: string, <- this refers to food type, like fast food or gourmet
-        price: string, <- values restricted to "CHEAP", "AFFORDABLE", "EXPENSIVE"
-        score: float, <- 0 to 5, up to 2 decimals
-        location: {
-            latitude: float,
-            longitude: float
-        },
-        schedule: [
-            MONDAY: { <- available days: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
-                start: {
-                    hour: int, <- 0 to 23
-                    minute: int <- 0 to 59
-                }
-                end: {
-                    hour: int, <- 0 to 23
-                    minute: int <- 0 to 59
-                }
-            }
-            ...same for every other day of the week
-        ],
-        contacts: [
-            {
-                name: string,
-                value: string
-            },
-            ...n contacts
-        ],
-        images: [string], <- Image URLs hosted somewhere
-        added_by: string, <- email of adder
-        added: date
-    }
-
-    Errors:
-        UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
-        EMPTY_PARAMETER (a REST parameter was not given with a request or is an empty string)
-        UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
 
 - add new restaurant:
     POST /restaurants/:data
@@ -242,13 +156,129 @@ If this JSON is not found on ANY request of the requests specified below, an err
         SCHEDULE_OUT_OF_BOUNDS (the schedule has an entry where the hours > 23 or < 0, or the minutes > 59 or < 0)
         SCHEDULE_UNKNOWN_DAY (the schedule includes a day with unknown name)
 
-- scoring a restaurant:
-    POST /restaurants/scores/:restaurant/:score
+- get single restaurant:
+    GET /restaurants/:id
+    {
+        success: true,
+        data: {
+            id: int,
+            name: string,
+            type: string, <- this refers to food type, like fast food or gourmet
+            price: string, <- values restricted to CHEAP, AFFORDABLE, EXPENSIVE
+            score: float, <- 0 to 5, up to 2 decimals
+            location: {
+                latitude: float,
+                longitude: float
+            },
+            schedule: [
+                MONDAY: { <- available days: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+                    start: {
+                        hour: int, <- 0 to 23
+                        minute: int <- 0 to 59
+                    }
+                    end: {
+                        hour: int, <- 0 to 23
+                        minute: int <- 0 to 59
+                    }
+                }
+                ...same for every other day of the week
+            ],
+            contacts: [
+                {
+                    name: string,
+                    value: string
+                },
+                ...n contacts
+            ],
+            images: [string], <- Image URLs hosted somewhere
+            added_by: string, <- email of adder
+            added: date
+        }
+    }
+
+    Errors:
+        UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
+        EMPTY_PARAMETER (a REST parameter was not given with a request or is an empty string)
+        UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
+
+- get all restaurants:
+    GET /restaurants/all/:query?
+    {
+        success: true,
+        data: {
+            restaurants: [
+                {
+                    id: int,
+                    name: string,
+                    type: string, <- this refers to food type, like fast food or gourmet
+                    price: string, <- values restricted to CHEAP, AFFORDABLE, EXPENSIVE
+                    score: float, <- 0 to 5, float
+                    location: {
+                        latitude: float,
+                        longitude: float
+                    },
+                    schedule: [
+                        MONDAY: { <- available days: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+                            start: {
+                                hour: int, <- 0 to 23
+                                minute: int <- 0 to 59
+                            }
+                            end: {
+                                hour: int, <- 0 to 23
+                                minute: int <- 0 to 59
+                            }
+                        }
+                        ...same for every other day of the week
+                    ],
+                    contacts: [
+                        {
+                            name: string,
+                            value: string
+                        },
+                        ...n contacts
+                    ],
+                    images: [string], <- Image URLs hosted somewhere
+                    added_by: string, <- email of adder
+                    added: date
+                },
+                ...n restaurants
+            ]
+        }
+    }
+
+    The query parameter is a JSON stringified and WILL be parsed upon arrival.
+    If the query parameter is NOT given (GET /restaurants/all), all restaurants are returned.
+    The JSON may ommit any of it's children upon arrival, and they can come in any order.
+    It should have the following structure:
+
+    {
+        id: int,
+        name: string,
+        type: string, <- this refers to food type, like fast food or gourmet
+        price: string, <- values restricted to CHEAP, AFFORDABLE, EXPENSIVE
+        score: int, <- 0 to 5
+        location: {
+            latitude: float,
+            longitude: float,
+            radiusSize: float
+        }
+    }
+
+    Errors:
+        UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
+        EMPTY_PARAMETER (a REST parameter was not given with a request or is an empty string)
+        UNPARSABLE_JSON (the string received could not be parsed to a JSON)
+        INCORRECT_VALUE_TYPE (a value in the key:value pairs does not hold the correct type)
+        UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
+        UNKNOWN_PRICE (the price isn't CHEAP, AFFORDABLE or EXPENSIVE)
+        SCORE_OUT_OF_BOUNDS (the score is lower than 0 or greater than 5)
+
+- adding a restaurant's score:
+    POST /restaurants/:id/scores/:score
     {
         success: true
     }
 
-    The restaurant parameter refers to its id.
     The score parameter must be a number between 0 and 5.
 
     Errors:
@@ -257,13 +287,35 @@ If this JSON is not found on ANY request of the requests specified below, an err
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
         SCORE_OUT_OF_BOUNDS (the score is lower than 0 or greater than 5)
 
+- getting all restaurant scores
+    GET /restaurants/:id/images
+    {
+        success: true,
+        data: {
+            average: float, <- average score for the restaurant
+            scores: [
+                {
+                    added_by: string, <- email of adder
+                    added: date
+                    score: int <- constrained from 0 to 5
+                },
+                ...n scores
+            ]
+        }
+    }
+
+    Errors:
+        UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
+        EMPTY_PARAMETER (a REST parameter was not given with a request or is an empty string)
+        UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
+
+
 - adding a restaurant's image:
-    POST /restaurants/images/:restaurant/:image
+    POST /restaurants/:id/images/:image
     {
         success: true
     }
 
-    The restaurant parameter refers to its id.
     The image parameter MUST BE DEFINED LATER ON.
     
     Errors:
@@ -271,14 +323,48 @@ If this JSON is not found on ANY request of the requests specified below, an err
         EMPTY_PARAMETER (a REST parameter was not given with a request or is an empty string)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
 
+- getting all restaurant image URLs:
+    GET /restaurants/:id/images
+    {
+        success: true,
+        data: {
+            images: [...n image URLs as strings]
+        }
+    }
+
+    Errors:
+        UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
+        EMPTY_PARAMETER (a REST parameter was not given with a request or is an empty string)
+        UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
+
 - adding a comment under a restaurant
-    POST /comments/:restaurant/:text
+    POST restaurants/:id/comments/:text
     {
         success: true
     }
 
-    The restaurant parameter refers to a restaurant's id.
     The text parameter is the text of the comment.
+
+    Errors:
+        UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
+        EMPTY_PARAMETER (a REST parameter was not given with a request or is an empty string)
+        UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
+
+- getting a restaurant's comments
+    GET restaurants/:id/comments
+    {
+        success: true,
+        data: {
+            comments: [
+                {
+                    added_by: string, <- email of adder
+                    added: date
+                    text: string
+                },
+                ...n comments
+            ]
+        }
+    }
 
     Errors:
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)

@@ -1,5 +1,25 @@
 {
-    "user": {
+    "routes": {
+        "STRINGS":"/strings",
+        "USER_SIGN_UP":"/users/:name/:email/:password",
+        "USER_LOGIN":"/users/sessions/:email/:password/:type",
+        "SESSION_LOGIN":"/users/sessions/:id",
+        "SESSION_LOGOUT":"/users/sessions/:id",
+        "USER_FORGOT_PASSWORD":"/users/:email",
+        "ADD_RESTAURANT":"/retaurants/:data",
+        "GET_RESTAURANT":"/restaurants/:id",
+        "GET_RESTAURANTS":"/restaurants/all/:query?",
+        "ADD_RESTAURANT_SCORE":"/restaurants/:id/scores/:score",
+        "GET_RESTAURANT_SCORES":"/restaurants/:id/scores",
+        "ADD_RESTAURANT_IMAGE":"/restaurants/:id/images/:image",
+        "GET_RESTAURANT_IMAGES":"/restaurants/:id/images",
+        "ADD_RESTAURANT_COMMENT":"restaurants/:id/comments/:text",
+        "GET_RESTAURANT_COMMENTS":"restaurants/:id/comments",
+        "DELETE_RESTAURANT":"/restaurants/:id",
+        "UPDATE_RESTAURANT":"/restaurants/:id/:data",
+        "GET_USERS":"/users/all"
+    },
+    "users": {
         "ADMINISTRATOR":"ADMINISTRATOR",
         "REGULAR":"REGULAR"
     },
