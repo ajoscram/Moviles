@@ -6,7 +6,7 @@
         "SESSION_LOGIN":"/users/sessions/:id",
         "SESSION_LOGOUT":"/users/sessions/:id",
         "USER_FORGOT_PASSWORD":"/users/:email",
-        "ADD_RESTAURANT":"/retaurants/:data",
+        "ADD_RESTAURANT":"/restaurants/:data",
         "GET_RESTAURANT":"/restaurants/:id",
         "GET_RESTAURANTS":"/restaurants/all/:query?",
         "ADD_RESTAURANT_SCORE":"/restaurants/:id/scores/:score",
@@ -38,7 +38,6 @@
         "SUNDAY":"SUNDAY"
     },        
     "errors": {
-        "EMPTY_PARAMETER":"EMPTY_PARAMETER",
         "EMAIL_USED":"EMAIL_USED",
         "INCORRECT_EMAIL_FORMAT":"INCORRECT_EMAIL_FORMAT",
         "UNKNOWN_EMAIL":"UNKNOWN_EMAIL",
