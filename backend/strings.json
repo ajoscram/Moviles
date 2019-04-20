@@ -17,7 +17,8 @@
         "GET_RESTAURANT_COMMENTS":"restaurants/:id/comments",
         "DELETE_RESTAURANT":"/restaurants/:id",
         "UPDATE_RESTAURANT":"/restaurants/:id/:data",
-        "GET_USERS":"/users/all"
+        "GET_USERS":"/users/all",
+        "ANY":"*"
     },
     "users": {
         "ADMINISTRATOR":"ADMINISTRATOR",
@@ -38,6 +39,8 @@
         "SUNDAY":"SUNDAY"
     },        
     "errors": {
+        "UNHANDLED_ROUTE":"UNHANDLED_ROUTE",
+        "NOT_IMPLEMENTED_YET":"NOT_IMPLEMENTED_YET",
         "EMAIL_USED":"EMAIL_USED",
         "INCORRECT_EMAIL_FORMAT":"INCORRECT_EMAIL_FORMAT",
         "UNKNOWN_EMAIL":"UNKNOWN_EMAIL",

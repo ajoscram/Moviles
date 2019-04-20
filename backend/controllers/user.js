@@ -30,6 +30,14 @@ function sendPassword(email){
 
 }
 
+function getEmail(session){
+
+}
+
+function getAll(){
+    
+}
+
 module.exports = {
     "signUp": signUp,
     "fullLogin": fullLogin,
@@ -37,5 +45,7 @@ module.exports = {
     "logout": logout,
     "validate": validate,
     "validateAdministrator": validateAdministrator,
-    "sendPassword": sendPassword
+    "sendPassword": sendPassword,
+    "getEmail": getEmail,
+    "getAll": getAll
 }

@@ -5,9 +5,10 @@ const fs = require('fs');
 
 //local requires and imports
 const userController = require('./controllers/user.js');
-const commentController = require('./controllers/comment.js');
-const restaurantController = require('./controllers/restaurant.js'); 
-const routes = JSON.parse(fs.readFileSync('strings.json')).routes;
+const restaurantController = require('./controllers/restaurant.js');
+const strings = JSON.parse(fs.readFileSync('strings.json'));  
+const routes = strings.routes;
+const errors = strings.errors;
 
 //express setup
 const app = express();
@@ -47,7 +48,7 @@ function validateAdminstrator(request, response, next){
 }
 
 //HTTP routing
-app.get(routes.STRINGS, (response) => {
+app.get(routes.STRINGS, (request, response) => {
     let strings = JSON.parse(fs.readFileSync('strings.json'));
     delete strings.routes;
     response.send(getSuccessfulResponse(strings));
@@ -109,9 +110,24 @@ app.get(routes.USER_FORGOT_PASSWORD, (request, response) => {
 
 app.post(routes.ADD_RESTAURANT, validateSession, (request, response) => {
     let restaurant = request.params.data;
+    let email = userController.getEmail(request.body.session);
     try{
-        restaurantController.add(restaurant);
+        restaurantController.add(restaurant, email);
         response.send(getSuccessfulResponse());
+    }catch(error){
+        response.send(getUnSuccessfulResponse(error));
+    }
+});
+
+app.get(routes.GET_RESTAURANTS, validateSession, (request, response) => {
+    let query = request.params.query;
+    try{
+        let result;
+        if(query)
+            result = restaurantController.query(query);
+        else
+            result = restaurantController.getAll();
+        response.send(getSuccessfulResponse(result));
     }catch(error){
         response.send(getUnSuccessfulResponse(error));
     }
@@ -120,51 +136,104 @@ app.post(routes.ADD_RESTAURANT, validateSession, (request, response) => {
 app.get(routes.GET_RESTAURANT, validateSession, (request, response) => {
     let id = request.params.id;
     try{
-        let data = restaurantController.get(id);
-        response.send(getSuccessfulResponse(data));
+        let restaurant = restaurantController.get(id);
+        response.send(getSuccessfulResponse(restaurant));
     }catch(error){
         response.send(getUnSuccessfulResponse(error));
     }
 });
 
-app.get(routes.GET_RESTAURANTS, validateSession, (request, response) => {
-    //handle query possibly not passed!
-});
-
 app.post(routes.ADD_RESTAURANT_SCORE, validateSession, (request, response) => {
-
+    let id = request.params.id;
+    let score = request.params.score;
+    let email = userController.getEmail(request.body.session);
+    try{
+        restaurantController.addScore(id, score, email);
+        response.send(getSuccessfulResponse());
+    }catch(error){
+        response.send(getUnSuccessfulResponse(error));
+    }
 });
 
 app.get(routes.GET_RESTAURANT_SCORES, validateSession, (request, response) => {
-
+    let id = request.params.id;
+    try{
+        let scores = restaurantController.getScores(id);
+        response.send(getSuccessfulResponse(scores));
+    }catch(error){
+        response.send(getUnSuccessfulResponse(error));
+    }
 });
 
 app.post(routes.ADD_RESTAURANT_IMAGE, validateSession, (request, response) => {
-
+    //TODO: FINISH THIS API CALL
+    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
 
 app.get(routes.GET_RESTAURANT_IMAGES, validateSession, (request, response) => {
-
+    let id = request.params.id;
+    try{
+        let images = restaurantController.getImageURLs(id);
+        response.send(getSuccessfulResponse(images));
+    }catch(error){
+        response.send(getUnSuccessfulResponse(error));
+    }
 });
 
 app.post(routes.ADD_RESTAURANT_COMMENT, validateSession, (request, response) => {
-
+    let id = request.params.id;
+    let text = request.params.text;
+    let email = userController.getEmail(request.body.session);
+    try{
+        restaurantController.addComment(id, text, email);
+        response.send(getSuccessfulResponse());
+    }catch(error){
+        response.send(getUnSuccessfulResponse(error));
+    }
 });
 
 app.get(routes.GET_RESTAURANT_COMMENTS, validateSession, (request, response) => {
-
+    let id = request.params.id;
+    try{
+        let comments = restaurantController.getComments(id);
+        response.send(getSuccessfulResponse(comments));
+    }catch(error){
+        response.send(getUnSuccessfulResponse(error));
+    }
 });
 
 app.delete(routes.DELETE_RESTAURANT, validateSession, validateAdminstrator, (request, response) => {
-
+    let id = request.params.id;
+    try{
+        restaurantController.delete(id);
+        response.send(getSuccessfulResponse());
+    }catch(error){
+        response.send(getUnSuccessfulResponse(error));
+    }
 });
 
 app.put(routes.UPDATE_RESTAURANT, validateSession, validateAdminstrator, (request, response) => {
-
+    let id = request.params.id;
+    let data = request.params.data;
+    try{
+        restaurantController.update(id, data);
+        response.send(getSuccessfulResponse());
+    }catch(error){
+        response.send(getUnSuccessfulResponse(error));
+    }
 });
 
 app.get(routes.GET_USERS, validateSession, validateAdminstrator, (request, response) => {
+    try{
+        let users = userController.getAll();
+        response.send(getSuccessfulResponse(users));
+    }catch(error){
+        response.send(getUnSuccessfulResponse(error));
+    }
+});
 
+app.all(routes.ANY, (request, response) => {
+    response.send(getUnSuccessfulResponse(errors.UNHANDLED_ROUTE));
 });
 
 app.listen(3000, () => {

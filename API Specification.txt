@@ -12,8 +12,9 @@ include this field, but it is always set to true. Clients should always check th
 an error when it is set to false.
 
 The error field holds any of the error strings described below, under each route's "Errors" section.
-There is one special type of error, given when a unhandled route is accessed:
-    UNHANDLED_ROUTE
+There are two special types of error:
+    UNHANDLED_ROUTE (triggered given when a unhandled route is accessed)
+    NOT_IMPLEMENTED_YET (the route is handled in the system but it is not currently implemented)
 
 Errors look like this:
 {
@@ -347,6 +348,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
         data: {
             comments: [
                 {
+                    comment_id: <- int
                     added_by: string, <- email of adder
                     added: date
                     text: string
