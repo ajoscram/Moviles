@@ -12,7 +12,7 @@ include this field, but it is always set to true. Clients should always check th
 an error when it is set to false.
 
 The error field holds any of the error strings described below, under each route's "Errors" section.
-There are two special types of error:
+There are three special types of error:
     UNHANDLED_ROUTE (triggered given when a unhandled route is accessed)
     NOT_IMPLEMENTED_YET (the route is handled in the system but it is not currently implemented)
 
@@ -50,6 +50,7 @@ Errors look like this:
     }
 
     Errors:
+        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         EMAIL_USED (email is currently used by another account)
         INCORRECT_EMAIL_FORMAT (the email is not in the form of person@somewhere.com)
 
@@ -63,6 +64,7 @@ Errors look like this:
     }
 
     Errors:
+        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_EMAIL (email is not registered in the database)
         INCORRECT_PASSWORD (password does not match the account's)
         UNKNOWN_LOGIN_TYPE (the type was different from ADMINISTRATOR or REGULAR)
@@ -78,6 +80,7 @@ Errors look like this:
     }
 
     Errors:
+        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session id given is not currently used in an active session)
 
 - session logout:
@@ -86,6 +89,7 @@ Errors look like this:
         success: true
     }
     Errors:
+        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session id given is not currently used in an active session)
 
 - user forgot password:
@@ -95,6 +99,7 @@ Errors look like this:
     }
 
     Errors:
+        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_EMAIL (email is not registered in the database)
 
 ----------------------------------------------------------------------------------------------------------------
@@ -146,6 +151,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     }
 
     Errors:
+        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNPARSABLE_JSON (the string received could not be parsed to a JSON)
         INCOMPLETE_JSON (the JSON is missing a field)
@@ -159,7 +165,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     {
         success: true,
         data: {
-            id: int,
+            _id: string,
             name: string,
             type: string, <- this refers to food type, like fast food or gourmet
             price: string, <- values restricted to CHEAP, AFFORDABLE, EXPENSIVE
@@ -195,6 +201,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     }
 
     Errors:
+        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
 
@@ -205,7 +212,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
         data: {
             restaurants: [
                 {
-                    id: int,
+                    _id: string,
                     name: string,
                     type: string, <- this refers to food type, like fast food or gourmet
                     price: string, <- values restricted to CHEAP, AFFORDABLE, EXPENSIVE
@@ -249,7 +256,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     It should have the following structure:
 
     {
-        id: int,
+        _id: string,
         name: string,
         type: string, <- this refers to food type, like fast food or gourmet
         price: string, <- values restricted to CHEAP, AFFORDABLE, EXPENSIVE
@@ -262,6 +269,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     }
 
     Errors:
+        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNPARSABLE_JSON (the string received could not be parsed to a JSON)
         INCORRECT_VALUE_TYPE (a value in the key:value pairs does not hold the correct type)
@@ -278,6 +286,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     The score parameter must be a number between 0 and 5.
 
     Errors:
+        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
         SCORE_OUT_OF_BOUNDS (the score is lower than 0 or greater than 5)
@@ -290,6 +299,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
             average: float, <- average score for the restaurant
             scores: [
                 {
+                    _id: string,
                     added_by: string, <- email of adder
                     added: date
                     score: int <- constrained from 0 to 5
@@ -300,6 +310,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     }
 
     Errors:
+        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
 
@@ -313,6 +324,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     The image parameter MUST BE DEFINED LATER ON.
     
     Errors:
+        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
 
@@ -326,6 +338,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     }
 
     Errors:
+        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
 
@@ -338,6 +351,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     The text parameter is the text of the comment.
 
     Errors:
+        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
 
@@ -348,7 +362,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
         data: {
             comments: [
                 {
-                    comment_id: <- int
+                    _id: <- string
                     added_by: string, <- email of adder
                     added: date
                     text: string
@@ -359,6 +373,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     }
 
     Errors:
+        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
 
@@ -374,6 +389,7 @@ administrator and these methods are called an error will be returned.
     }
 
     Errors:
+        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         USER_IS_NOT_ADMINISTRATOR (the user attempted an action that can only be done from an administrator account)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
@@ -420,6 +436,7 @@ administrator and these methods are called an error will be returned.
     }
 
     Errors:
+        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         USER_IS_NOT_ADMINISTRATOR (the user attempted an action that can only be done from an administrator account)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
@@ -436,13 +453,17 @@ administrator and these methods are called an error will be returned.
         success: true,
         users:[
             {
+                _id: string,
                 name: string,
-                email: string
+                email: string,
+                type: string, <- REGULAR or ADMINISTRATOR
+                added: date
             },
             ...n users
         ]
     }
 
     Errors:
+        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         USER_IS_NOT_ADMINISTRATOR (the user attempted an action that can only be done from an administrator account)

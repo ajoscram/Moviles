@@ -8,8 +8,7 @@ const userController = require('./controllers/user.js');
 const restaurantController = require('./controllers/restaurant.js');
 const dataAccess = require('./data.js');
 
-//connect initialize all data access objects
-dataAccess.connect();
+//initialize strings needed and port number
 const routes = dataAccess.strings.routes;
 const errors = dataAccess.strings.errors;
 const port = 3000;
@@ -63,12 +62,12 @@ app.post(routes.USER_SIGN_UP, (request, response) => {
     let name = request.params.name;
     let email = request.params.email;
     let password = request.params.password;
-    try{
-        userController.signUp(name, email, password);
+    userController.signUp(name, email, password, (error) => {
+        if(error)
+            response.send(getUnSuccessfulResponse(error));
+        else
         response.send(getSuccessfulResponse());
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    });
 });
 
 app.post(routes.USER_LOGIN, (request, response) => {
@@ -241,6 +240,15 @@ app.all(routes.ANY, (request, response) => {
     response.send(getUnSuccessfulResponse(errors.UNHANDLED_ROUTE));
 });
 
-app.listen(port, () => {
-    console.log("Listening on port "+port+"...");
+//finally connect to te database, and after that open the server for requests
+dataAccess.connect((error) => {
+    if(error){
+        console.log(error);
+        process.exit(1);
+    }
+    else{
+        app.listen(port, () => {
+            console.log("Listening on port " + port + "...");
+        });
+    }
 });

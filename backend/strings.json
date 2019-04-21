@@ -1,6 +1,7 @@
 {
     "database":{
-        "URL":"mongodb://localhost:27017/RESTaurantes",
+        "URL":"mongodb://localhost:27017",
+        "name":"RESTaurantes",
         "collections": {
             "USERS":"users",
             "RESTAURANTS":"restaurants",
@@ -48,6 +49,7 @@
         "SUNDAY":"SUNDAY"
     },        
     "errors": {
+        "DB_ERROR":"DB_ERROR",
         "UNHANDLED_ROUTE":"UNHANDLED_ROUTE",
         "NOT_IMPLEMENTED_YET":"NOT_IMPLEMENTED_YET",
         "EMAIL_USED":"EMAIL_USED",
