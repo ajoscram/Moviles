@@ -6,9 +6,13 @@ const fs = require('fs');
 //local requires and imports
 const userController = require('./controllers/user.js');
 const restaurantController = require('./controllers/restaurant.js');
-const strings = JSON.parse(fs.readFileSync('strings.json'));  
-const routes = strings.routes;
-const errors = strings.errors;
+const dataAccess = require('./data.js');
+
+//connect initialize all data access objects
+dataAccess.connect();
+const routes = dataAccess.strings.routes;
+const errors = dataAccess.strings.errors;
+const port = 3000;
 
 //express setup
 const app = express();
@@ -51,6 +55,7 @@ function validateAdminstrator(request, response, next){
 app.get(routes.STRINGS, (request, response) => {
     let strings = JSON.parse(fs.readFileSync('strings.json'));
     delete strings.routes;
+    delete strings.database;
     response.send(getSuccessfulResponse(strings));
 });
 
@@ -236,6 +241,6 @@ app.all(routes.ANY, (request, response) => {
     response.send(getUnSuccessfulResponse(errors.UNHANDLED_ROUTE));
 });
 
-app.listen(3000, () => {
-    console.log("Listening...");
+app.listen(port, () => {
+    console.log("Listening on port "+port+"...");
 });

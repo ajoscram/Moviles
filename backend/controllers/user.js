@@ -1,8 +1,13 @@
-const fs = require('fs');
-const strings = JSON.parse(fs.readFileSync('strings.json'));
+const dataAccess = require('../data.js');
 
-function signUp(name, email, password){ 
+const collections = dataAccess.strings.collections;
+const types = dataAccess.strings.users; //user types
+const errors = dataAccess.strings.errors;
+let db = dataAccess.db;
 
+function signUp(name, email, password){
+
+    db.collection(collections.users).insertOne({"name": name, "email": email, "password": password});
 }
 
 function fullLogin(email, password, type){
@@ -10,7 +15,6 @@ function fullLogin(email, password, type){
 }
 
 function login(session){
-
 }
 
 function logout(session){

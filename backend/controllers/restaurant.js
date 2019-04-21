@@ -1,5 +1,5 @@
-const fs = require('fs');
-const strings = JSON.parse(fs.readFileSync('strings.json'));
+const dataAccess = require('../data.js');
+const errors = dataAccess.strings.errors;
 
 function add(data, email){
     try{
@@ -7,7 +7,7 @@ function add(data, email){
         //MISSING CODE!
     } catch(error) {
         if(error instanceof SyntaxError)
-            throw strings.errors.UNPARSABLE_JSON;
+            throw errors.UNPARSABLE_JSON;
         else
             throw error;
     }
@@ -27,7 +27,7 @@ function query(query){
         //missing code!
     } catch(error) {
         if(error instanceof SyntaxError)
-            throw strings.errors.UNPARSABLE_JSON;
+            throw errors.UNPARSABLE_JSON;
         else
             throw error;
     }
@@ -39,7 +39,7 @@ function update(id, data){
         //missing code!
     } catch(error) {
         if(error instanceof SyntaxError)
-            throw strings.errors.UNPARSABLE_JSON;
+            throw errors.UNPARSABLE_JSON;
         else
             throw error;
     }

@@ -1,4 +1,13 @@
 {
+    "database":{
+        "URL":"mongodb://localhost:27017/RESTaurantes",
+        "collections": {
+            "USERS":"users",
+            "RESTAURANTS":"restaurants",
+            "SCORES":"scores",
+            "COMMENTS":"comments"
+        }
+    },
     "routes": {
         "STRINGS":"/strings",
         "USER_SIGN_UP":"/users/:name/:email/:password",
