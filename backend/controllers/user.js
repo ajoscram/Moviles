@@ -30,7 +30,7 @@ function signUp(name, email, password, callback){
                     "added": Date(),
                     "deleted": false
                 }
-                dataAccess.add(sessionsCollection, newUser, (mongoError, result) => {
+                dataAccess.add(usersCollection, newUser, (mongoError, result) => {
                     if(mongoError)
                         callback(errors.DB_ERROR);
                     else

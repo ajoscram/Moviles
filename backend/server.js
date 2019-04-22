@@ -30,6 +30,7 @@ function getUnSuccessfulResponse(error){
     return { "success": false, "error": error };
 }
 
+//NOTE: CHANGES THE BODY
 function validateSession(request, response, next){
     let session = request.body.session;
     userController.validate(session, (error, sessionObject) => {
@@ -54,7 +55,7 @@ function validateAdminstrator(request, response, next){
 
 //HTTP routing
 app.get(routes.STRINGS, (request, response) => {
-    let strings = dataAccess.strings.public;
+    let strings = dataAccess.config.public;
     response.send(getSuccessfulResponse(strings));
 });
 

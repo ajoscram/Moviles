@@ -1,5 +1,5 @@
 const fs = require('fs');
-const client = require('mongodb').MongoClient;
+const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
 
 console.log('Reading strings.json file...');
@@ -19,7 +19,8 @@ function connect(callback){
         callback(null); //we're already connected
     else{
         console.log('Connecting to the database...');
-        client.connect(database.url, database.options, (error, client) => {
+        const client = new MongoClient(database.url, database.options);
+        client.connect(error => {
             if(error)
                 callback(error);
             else{
@@ -51,7 +52,7 @@ function add(collection, object, callback){
 
 //callback(MongoError, updateWriteOpResult)
 function update(collection, filter, update, callback){
-    database.instace.collection(collection).updateOne(filter, {$set: update}, (error, result) => {
+    database.instance.collection(collection).updateOne(filter, {$set: update}, (error, result) => {
         if(error)
             console.log(error);
         callback(error, result);
@@ -61,7 +62,7 @@ function update(collection, filter, update, callback){
 //WARNING! DOES GET FIRST, THEN UPDATE
 //callback(MongoError, findAndModifyWriteOpResult)
 function getAndUpdate(collection, filter, update, callback){
-    database.instace.collection(collection).findOneAndUpdate(filter, {$set: update}, (error, result) => {
+    database.instance.collection(collection).findOneAndUpdate(filter, {$set: update}, (error, result) => {
         if(error)
             console.log(error);
         callback(error, result);
