@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">mobile_Rest</string>
+    <string name="title_activity_map">Map</string>
+    <string name="title1">Restaurantes</string>
+    <string name="txt_ListarR">Restaurantes</string>
+    <string name="restaurants">Restaurants</string>
+
+
+</resources>
