@@ -101,6 +101,7 @@ Errors look like this:
     Errors:
         DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_EMAIL (email is not registered in the database)
+        MAIL_PASSWORD_ERROR (error while sending the password to the user)
 
 ----------------------------------------------------------------------------------------------------------------
 From this point on, every single one of these methods requires a session token to be given via the HTML's body.

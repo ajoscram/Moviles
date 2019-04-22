@@ -9,9 +9,9 @@ const restaurantController = require('./controllers/restaurant.js');
 const dataAccess = require('./data.js');
 
 //initialize strings needed and port number
-const routes = dataAccess.strings.routes;
-const errors = dataAccess.strings.errors;
-const port = 3000;
+const routes = dataAccess.config.private.routes;
+const errors = dataAccess.config.public.errors;
+const port = dataAccess.config.private.server.port;
 
 //express setup
 const app = express();
@@ -32,12 +32,14 @@ function getUnSuccessfulResponse(error){
 
 function validateSession(request, response, next){
     let session = request.body.session;
-    try{
-        userController.validate(session);
-        next();
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    userController.validate(session, (error, sessionObject) => {
+        if(error)
+            response.send(getUnSuccessfulResponse(error));
+        else{
+            request.body.session = sessionObject;
+            next();
+        }
+    });
 }
 
 function validateAdminstrator(request, response, next){
@@ -52,9 +54,7 @@ function validateAdminstrator(request, response, next){
 
 //HTTP routing
 app.get(routes.STRINGS, (request, response) => {
-    let strings = JSON.parse(fs.readFileSync('strings.json'));
-    delete strings.routes;
-    delete strings.database;
+    let strings = dataAccess.strings.public;
     response.send(getSuccessfulResponse(strings));
 });
 
@@ -66,7 +66,7 @@ app.post(routes.USER_SIGN_UP, (request, response) => {
         if(error)
             response.send(getUnSuccessfulResponse(error));
         else
-        response.send(getSuccessfulResponse());
+            response.send(getSuccessfulResponse());
     });
 });
 
@@ -74,99 +74,70 @@ app.post(routes.USER_LOGIN, (request, response) => {
     let email = request.params.email;
     let password = request.params.password;
     let type = request.params.type;
-    try{
-        let data = userController.fullLogin(email, password, type);
-        response.send(getSuccessfulResponse(data));
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    userController.fullLogin(email, password, type, (error, sessionData) => {
+        if(error)
+            response.send(getUnSuccessfulResponse(error));
+        else
+            response.send(getSuccessfulResponse(sessionData));
+    });
 });
 
 app.put(routes.SESSION_LOGIN, (request, response) => {
     let session = request.params.id;
-    try{
-        let data = userController.login(session);
-        response.send(getSuccessfulResponse(data));
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    userController.login(session, (error, sessionData) => {
+        if(error)
+            response.send(getUnSuccessfulResponse(error));
+        else
+            response.send(getSuccessfulResponse(sessionData));
+    });
 });
 
 app.delete(routes.SESSION_LOGOUT, (request, response) => {
     let session = request.params.id;
-    try{
-        userController.logout(session);
-        response.send(getSuccessfulResponse());
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    userController.logout(session, (error) => {
+        if(error)
+            response.send(getUnSuccessfulResponse(error));
+        else
+            response.send(getSuccessfulResponse());
+    });
 });
 
 app.get(routes.USER_FORGOT_PASSWORD, (request, response) => {
     let email = request.params.email;
-    try{
-        userController.sendPassword(email);
-        response.send(getSuccessfulResponse());
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    userController.sendPassword(email, (error) => {
+        if(error)
+            response.send(getUnSuccessfulResponse(error));
+        else
+            response.send(getSuccessfulResponse());
+    });
 })
 
 app.post(routes.ADD_RESTAURANT, validateSession, (request, response) => {
     let restaurant = request.params.data;
     let email = userController.getEmail(request.body.session);
-    try{
-        restaurantController.add(restaurant, email);
-        response.send(getSuccessfulResponse());
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
 
 app.get(routes.GET_RESTAURANTS, validateSession, (request, response) => {
     let query = request.params.query;
-    try{
-        let result;
-        if(query)
-            result = restaurantController.query(query);
-        else
-            result = restaurantController.getAll();
-        response.send(getSuccessfulResponse(result));
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
 
 app.get(routes.GET_RESTAURANT, validateSession, (request, response) => {
     let id = request.params.id;
-    try{
-        let restaurant = restaurantController.get(id);
-        response.send(getSuccessfulResponse(restaurant));
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
 
 app.post(routes.ADD_RESTAURANT_SCORE, validateSession, (request, response) => {
     let id = request.params.id;
     let score = request.params.score;
     let email = userController.getEmail(request.body.session);
-    try{
-        restaurantController.addScore(id, score, email);
-        response.send(getSuccessfulResponse());
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
 
 app.get(routes.GET_RESTAURANT_SCORES, validateSession, (request, response) => {
     let id = request.params.id;
-    try{
-        let scores = restaurantController.getScores(id);
-        response.send(getSuccessfulResponse(scores));
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
 
 app.post(routes.ADD_RESTAURANT_IMAGE, validateSession, (request, response) => {
@@ -176,64 +147,34 @@ app.post(routes.ADD_RESTAURANT_IMAGE, validateSession, (request, response) => {
 
 app.get(routes.GET_RESTAURANT_IMAGES, validateSession, (request, response) => {
     let id = request.params.id;
-    try{
-        let images = restaurantController.getImageURLs(id);
-        response.send(getSuccessfulResponse(images));
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
 
 app.post(routes.ADD_RESTAURANT_COMMENT, validateSession, (request, response) => {
     let id = request.params.id;
     let text = request.params.text;
-    let email = userController.getEmail(request.body.session);
-    try{
-        restaurantController.addComment(id, text, email);
-        response.send(getSuccessfulResponse());
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    let session = request.body.session;
+    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
 
 app.get(routes.GET_RESTAURANT_COMMENTS, validateSession, (request, response) => {
     let id = request.params.id;
-    try{
-        let comments = restaurantController.getComments(id);
-        response.send(getSuccessfulResponse(comments));
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
 
 app.delete(routes.DELETE_RESTAURANT, validateSession, validateAdminstrator, (request, response) => {
     let id = request.params.id;
-    try{
-        restaurantController.delete(id);
-        response.send(getSuccessfulResponse());
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
 
 app.put(routes.UPDATE_RESTAURANT, validateSession, validateAdminstrator, (request, response) => {
     let id = request.params.id;
     let data = request.params.data;
-    try{
-        restaurantController.update(id, data);
-        response.send(getSuccessfulResponse());
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
 
 app.get(routes.GET_USERS, validateSession, validateAdminstrator, (request, response) => {
-    try{
-        let users = userController.getAll();
-        response.send(getSuccessfulResponse(users));
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
 
 app.all(routes.ANY, (request, response) => {

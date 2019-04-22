@@ -1,5 +1,5 @@
 const dataAccess = require('../data.js');
-const errors = dataAccess.strings.errors;
+const errors = dataAccess.config.public.errors;
 
 function add(data, email){
     try{

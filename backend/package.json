@@ -14,9 +14,9 @@
   "author": "Alejandro Schmidt Ramírez",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^3.0.6",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "mongodb": "^3.2.3"
+    "mongodb": "^3.2.3",
+    "nodemailer": "^4.7.0"
   }
 }
