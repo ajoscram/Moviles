@@ -23,9 +23,20 @@
             android:onClick="Goadd"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:text="Agregar Restaurante"
+            android:text="Agregar "
             android:textColor="@android:color/holo_blue_dark"
             android:textColorLink="@android:color/darker_gray" />
+
+        <Button
+            android:id="@+id/rest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:onClick="restaurants"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="Restaurantes"
+            android:textColor="@android:color/holo_blue_dark" />
 
 
         <Button
@@ -36,7 +47,7 @@
             android:onClick="GoSearch"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:text="Buscar Restaurante"
+            android:text="Buscar"
             android:textColor="@android:color/holo_blue_dark" />
 
 
