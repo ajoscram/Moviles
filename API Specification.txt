@@ -129,7 +129,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
             latitude: float,
             longitude: float
         },
-        schedule: [
+        schedule: {
             MONDAY: { <- available days: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
                 start: {
                     hour: int, <- 0 to 23
@@ -139,9 +139,9 @@ If this JSON is not found on ANY request of the requests specified below, an err
                     hour: int, <- 0 to 23
                     minute: int <- 0 to 59
                 }
-            }
+            },
             ...same for every other day of the week
-        ],
+        },
         contacts: [
             {
                 name: string,
@@ -175,7 +175,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
                 latitude: float,
                 longitude: float
             },
-            schedule: [
+            schedule: {
                 MONDAY: { <- available days: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
                     start: {
                         hour: int, <- 0 to 23
@@ -187,7 +187,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
                     }
                 }
                 ...same for every other day of the week
-            ],
+            },
             contacts: [
                 {
                     name: string,
@@ -222,7 +222,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
                         latitude: float,
                         longitude: float
                     },
-                    schedule: [
+                    schedule: {
                         MONDAY: { <- available days: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
                             start: {
                                 hour: int, <- 0 to 23
@@ -234,7 +234,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
                             }
                         }
                         ...same for every other day of the week
-                    ],
+                    },
                     contacts: [
                         {
                             name: string,

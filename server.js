@@ -185,6 +185,7 @@ app.all(routes.ANY, (request, response) => {
     response.send(getUnSuccessfulResponse(errors.UNHANDLED_ROUTE));
 });
 
+/*
 //finally connect to te database, and after that open the server for requests
 dataAccess.connect((error) => {
     if(error){
@@ -197,4 +198,4 @@ dataAccess.connect((error) => {
             console.log("Listening on port " + port + "...");
         });
     }
-});
+});*/

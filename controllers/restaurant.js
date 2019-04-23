@@ -1,33 +1,89 @@
 const dataAccess = require('../data.js');
 const errors = dataAccess.config.public.errors;
+const prices = dataAccess.config.public.prices;
 const restaurantsCollection = dataAccess.config.private.database.collections.RESTAURANTS;
 const scoresCollection = dataAccess.config.private.database.collections.SCORES;
 const commentsCollection = dataAccess.config.private.database.collections.COMMENTS;
 
-//checks if the received json has all the restaurant fields necessary
-//returns an error if it finds one, if it doesn't then null is returned
-function getRestaurantJSONFormatError(json){
+function getRestaurantName(object){
+    if(!object.hasOwnProperty('name'))
+        throw errors.INCOMPLETE_JSON;
+    else{
+        if(!(object.name instanceof String))
+            throw errors.INCORRECT_VALUE_TYPE;
+        else
+            return object.name;
+    }
+}
 
+function getRestaurantType(object){
+    if(!object.hasOwnProperty('type'))
+        throw errors.INCOMPLETE_JSON;
+    else{
+        if(!(object.type instanceof String))
+            throw errors.INCORRECT_VALUE_TYPE;
+        else
+            return object.type;
+    }
+}
+
+function getRestaurantPrice(object){
+    if(!object.hasOwnProperty('price'))
+        throw errors.INCOMPLETE_JSON;
+    else{
+        if(!(object.price instanceof String))
+            throw errors.INCORRECT_VALUE_TYPE;
+        else if(!(price in Object.values(prices)))
+            throw errors.UNKNOWN_PRICE;
+        else
+            return object.price;
+    }
+}
+
+function getRestaurantLocation(object){
+    if(!object.hasOwnProperty('location'))
+        throw errors.INCOMPLETE_JSON;
+    else{
+        let location = object.location;
+        if(!location.hasOwnProperty('latitude') || !location.hasOwnProperty('longitude'))
+            throw errors.INCOMPLETE_JSON;
+        if(!(location.latitude instanceof Number) || !(location.longitude instanceof Number))
+            throw errors.INCORRECT_VALUE_TYPE;
+        else
+            return {"latitude": location.latitude, "longitude": location.longitude};
+    }
+}
+
+function getRestaurantContacts(object){
+    if(!object.hasOwnProperty('schedule'))
+        throw errors.INCOMPLETE_JSON;
+    else{
+        for(let day in Object.keys(object.schedule)){
+            
+        }
+    }
 }
 
 //callback(error)
 function add(data, email, callback){
     try{
-        let json = JSON.parse(data);
-        let jsonError = getRestaurantJSONFormatError(json);
-        if(jsonError)
-            throw result;
-        else{
-            data.images = [];
-            data.added_by = email;
-            data.added = Date();
-            dataAccess.add(restaurantsCollection, data, (mongoError, result) => {
-                if(mongoError)
-                    throw errors.DB_ERROR;
-                else
-                    callback(null);
-            });
-        }
+        let object = JSON.parse(data);
+        let restaurant = {};
+        restaurant.name = getRestaurantName(object);
+        restaurant.type = getRestaurantType(object);
+        restaurant.price = getRestaurantPrice(object);
+        restaurant.location = getRestaurantLocation(object);
+        restaurant.schedule = getRestaurantSchedule(object);
+        retaurant.contacts = getRestaurantContacts(object);
+        restaurant.images = [];
+        restaurant.added_by = email;
+        restaurant.added = Date();
+        dataAccess.add(restaurantsCollection, restaurant, (mongoError, result) => {
+            if(mongoError)
+                throw errors.DB_ERROR;
+            else
+                callback(null);
+        });
     } catch(error) {
         if(error instanceof SyntaxError)
             callback(errors.UNPARSABLE_JSON);
