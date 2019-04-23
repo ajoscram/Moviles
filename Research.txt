@@ -1,11 +1,2 @@
-http://mongodb.github.io/node-mongodb-native/3.2/installation-guide/installation-guide/
-https://nodejs.org/dist/latest-v10.x/docs/api/fs.html#fs_file_system
-https://code.visualstudio.com/docs/nodejs/nodejs-tutorial
-https://medium.com/@grantspilsbury/build-and-deploy-a-node-express-server-to-heroku-in-10-steps-70c936ab15dc
-https://devcenter.heroku.com/articles/heroku-cli
-https://en.wikipedia.org/wiki/Great-circle_distance
-https://devcenter.heroku.com/articles/s3-upload-node
-http://mongodb.github.io/node-mongodb-native/3.2/quick-start/quick-start/
-
 mongo "mongodb+srv://maincluster-ifn9g.mongodb.net/test" --username alejandro
 7euccIvyGYOjSIUx

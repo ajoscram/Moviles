@@ -161,15 +161,16 @@ function getAll(callback){
     });
 }
 
-function query(query){
+//callback(error, array)
+function query(query, callback){
     try{
         let json = JSON.parse(query);
-        //missing code!
+        
     } catch(error) {
         if(error instanceof SyntaxError)
-            throw errors.UNPARSABLE_JSON;
+            callback(errors.UNPARSABLE_JSON);
         else
-            throw error;
+            callback(error);
     }
 }
 
@@ -194,10 +195,6 @@ function addScore(id, score, email){
 }
 
 function getScores(id){
-
-}
-
-function getImageURLs(id){
 
 }
 
