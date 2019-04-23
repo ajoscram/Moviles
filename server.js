@@ -11,7 +11,7 @@ const dataAccess = require('./data.js');
 //initialize strings needed and port number
 const routes = dataAccess.config.private.routes;
 const errors = dataAccess.config.public.errors;
-const port = dataAccess.config.private.server.port;
+const port = process.env.PORT || dataAccess.config.private.server.port;
 
 //express setup
 const app = express();
@@ -30,7 +30,7 @@ function getUnSuccessfulResponse(error){
     return { "success": false, "error": error };
 }
 
-//NOTE: CHANGES THE BODY
+//NOTE: CHANGES THE request.body.session to a session object 
 function validateSession(request, response, next){
     let session = request.body.session;
     userController.validate(session, (error, sessionObject) => {
@@ -43,14 +43,17 @@ function validateSession(request, response, next){
     });
 }
 
+//WARNING, MUST ALWAYS BE CALLED AFTER validateSession
+//in the express next() stack!
 function validateAdminstrator(request, response, next){
-    let session = request.body.session;
-    try{
-        userController.validateAdministrator(session);
-        next();
-    }catch(error){
-        response.send(getUnSuccessfulResponse(error));
-    }
+    console.log(request.body.session);
+    let type = request.body.session.type;
+    userController.isAdministrator(type, (error) => {
+        if(error)
+            response.send(getUnSuccessfulResponse(error));
+        else
+            next();
+    });
 }
 
 //HTTP routing
@@ -115,7 +118,7 @@ app.get(routes.USER_FORGOT_PASSWORD, (request, response) => {
 
 app.post(routes.ADD_RESTAURANT, validateSession, (request, response) => {
     let restaurant = request.params.data;
-    let email = userController.getEmail(request.body.session);
+    let email = request.body.session;
     response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
 
@@ -189,7 +192,8 @@ dataAccess.connect((error) => {
         process.exit(1);
     }
     else{
-        app.listen((process.env.PORT || port), () => {
+
+        app.listen(port, () => {
             console.log("Listening on port " + port + "...");
         });
     }

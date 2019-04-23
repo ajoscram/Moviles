@@ -49,6 +49,14 @@ function validType(type){
     return false;
 }
 
+//callback(error)
+function isAdministrator(type, callback){
+    if(type != dataAccess.config.public.users.ADMINISTRATOR)
+        callback(errors.USER_IS_NOT_ADMINISTRATOR);
+    else
+        callback();
+}
+
 //callback(MongoError, object)
 function addSession(email, type, callback){
     let newSession = {
@@ -179,14 +187,6 @@ function validate(session, callback){
     });
 }
 
-function validateAdministrator(session){
-
-}
-
-function getEmail(session){
-
-}
-
 function getAll(){
     
 }
@@ -197,8 +197,7 @@ module.exports = {
     "login": login,
     "logout": logout,
     "validate": validate,
-    "validateAdministrator": validateAdministrator,
+    "isAdministrator": isAdministrator,
     "sendPassword": sendPassword,
-    "getEmail": getEmail,
     "getAll": getAll
 }

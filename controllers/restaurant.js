@@ -1,15 +1,38 @@
 const dataAccess = require('../data.js');
 const errors = dataAccess.config.public.errors;
+const restaurantsCollection = dataAccess.config.private.database.collections.RESTAURANTS;
+const scoresCollection = dataAccess.config.private.database.collections.SCORES;
+const commentsCollection = dataAccess.config.private.database.collections.COMMENTS;
 
-function add(data, email){
+//checks if the received json has all the restaurant fields necessary
+//returns an error if it finds one, if it doesn't then null is returned
+function getRestaurantJSONFormatError(json){
+
+}
+
+//callback(error)
+function add(data, email, callback){
     try{
         let json = JSON.parse(data);
-        //MISSING CODE!
+        let jsonError = getRestaurantJSONFormatError(json);
+        if(jsonError)
+            throw result;
+        else{
+            data.images = [];
+            data.added_by = email;
+            data.added = Date();
+            dataAccess.add(restaurantsCollection, data, (mongoError, result) => {
+                if(mongoError)
+                    throw errors.DB_ERROR;
+                else
+                    callback(null);
+            });
+        }
     } catch(error) {
         if(error instanceof SyntaxError)
-            throw errors.UNPARSABLE_JSON;
+            callback(errors.UNPARSABLE_JSON);
         else
-            throw error;
+            callback(error);
     }
 }
 

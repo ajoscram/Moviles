@@ -50,7 +50,7 @@ Errors look like this:
     }
 
     Errors:
-        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
         EMAIL_USED (email is currently used by another account)
         INCORRECT_EMAIL_FORMAT (the email is not in the form of person@somewhere.com)
 
@@ -64,7 +64,7 @@ Errors look like this:
     }
 
     Errors:
-        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_EMAIL (email is not registered in the database)
         INCORRECT_PASSWORD (password does not match the account's)
         UNKNOWN_LOGIN_TYPE (the type was different from ADMINISTRATOR or REGULAR)
@@ -80,7 +80,7 @@ Errors look like this:
     }
 
     Errors:
-        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session id given is not currently used in an active session)
 
 - session logout:
@@ -89,7 +89,7 @@ Errors look like this:
         success: true
     }
     Errors:
-        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session id given is not currently used in an active session)
 
 - user forgot password:
@@ -99,7 +99,7 @@ Errors look like this:
     }
 
     Errors:
-        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_EMAIL (email is not registered in the database)
         MAIL_PASSWORD_ERROR (error while sending the password to the user)
 
@@ -152,7 +152,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     }
 
     Errors:
-        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNPARSABLE_JSON (the string received could not be parsed to a JSON)
         INCOMPLETE_JSON (the JSON is missing a field)
@@ -202,7 +202,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     }
 
     Errors:
-        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
 
@@ -270,7 +270,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     }
 
     Errors:
-        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNPARSABLE_JSON (the string received could not be parsed to a JSON)
         INCORRECT_VALUE_TYPE (a value in the key:value pairs does not hold the correct type)
@@ -287,7 +287,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     The score parameter must be a number between 0 and 5.
 
     Errors:
-        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
         SCORE_OUT_OF_BOUNDS (the score is lower than 0 or greater than 5)
@@ -311,7 +311,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     }
 
     Errors:
-        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
 
@@ -325,7 +325,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     The image parameter MUST BE DEFINED LATER ON.
     
     Errors:
-        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
 
@@ -339,7 +339,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     }
 
     Errors:
-        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
 
@@ -352,7 +352,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     The text parameter is the text of the comment.
 
     Errors:
-        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
 
@@ -374,7 +374,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     }
 
     Errors:
-        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
 
@@ -390,7 +390,7 @@ administrator and these methods are called an error will be returned.
     }
 
     Errors:
-        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         USER_IS_NOT_ADMINISTRATOR (the user attempted an action that can only be done from an administrator account)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
@@ -437,7 +437,7 @@ administrator and these methods are called an error will be returned.
     }
 
     Errors:
-        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         USER_IS_NOT_ADMINISTRATOR (the user attempted an action that can only be done from an administrator account)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
@@ -465,6 +465,6 @@ administrator and these methods are called an error will be returned.
     }
 
     Errors:
-        DATABASE_ERROR (this error is returned when request could not be handled in time or at all)
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         USER_IS_NOT_ADMINISTRATOR (the user attempted an action that can only be done from an administrator account)
