@@ -6,7 +6,7 @@ const fs = require('fs');
 //local requires and imports
 const userController = require('./controllers/user.js');
 const restaurantController = require('./controllers/restaurant.js');
-const dataAccess = require('./data.js');
+const dataAccess = require('./data.js/index.js');
 
 //initialize strings needed and port number
 const routes = dataAccess.config.private.routes;

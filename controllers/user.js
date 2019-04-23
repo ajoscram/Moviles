@@ -1,4 +1,4 @@
-const dataAccess = require('../data.js');
+const dataAccess = require('../../data.js/index.js');
 const mailer = require('../email.js');
 
 const types = dataAccess.config.public.users; //user types

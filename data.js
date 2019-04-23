@@ -2,7 +2,7 @@ const fs = require('fs');
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
 
-console.log('Reading strings.json file...');
+console.log('Reading config.json file...');
 const config = JSON.parse(fs.readFileSync('config.json'));
 console.log('Read!');
 
