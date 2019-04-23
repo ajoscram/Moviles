@@ -181,7 +181,7 @@ function validate(session, callback){
         if(mongoError)
             callback(errors.DB_ERROR, null);
         else if(!session)
-            callback(UNKNOWN_SESSION, null);
+            callback(errors.UNKNOWN_SESSION, null);
         else
             callback(null, sessionObject);
     });

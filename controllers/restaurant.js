@@ -136,12 +136,29 @@ function add(data, email, callback){
     }
 }
 
-function get(id){
-
+//callback(error, object)
+function get(id, callback){
+    let _id = dataAccess.getObjectID(id);
+    if(!_id)
+        callback(errors.UNKNOWN_RESTAURANT_ID, null);
+    dataAccess.get(restaurantsCollection, {"_id": _id}, (mongoError, restaurant) => {
+        if(mongoError)
+            callback(errors.DB_ERROR, null);
+        else if(!restaurant)
+            callback(errors.UNKNOWN_RESTAURANT_ID, null);
+        else
+            callback(null, restaurant);
+    });
 }
 
-function getAll(){
-
+//callback(error, array)
+function getAll(callback){
+    dataAccess.query(restaurantsCollection, {}, (mongoError, restaurants) => {
+        if(mongoError)
+            callback(errors.DB_ERROR, null);
+        else
+            callback(null, restaurants);
+    });
 }
 
 function query(query){

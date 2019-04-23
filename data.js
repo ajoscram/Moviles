@@ -41,6 +41,15 @@ function get(collection, filter, callback){
     });
 }
 
+//callback(mongoError, object)
+function query(collection, filter, callback){
+    database.instance.collection(collection).find(filter).toArray((error, result) => {
+        if(error)
+            console.log(error);
+        callback(error, result);
+    });
+}
+
 //callback(MongoError, insertOneWriteOpResult)
 function add(collection, object, callback){
     database.instance.collection(collection).insertOne(object, (error, result) => {
@@ -82,6 +91,7 @@ module.exports = {
     "getObjectID":getObjectID,
     "get":get,
     "getAndUpdate": getAndUpdate,
+    "query": query,
     "add":add,
     "update":update,
 }

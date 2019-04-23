@@ -46,7 +46,6 @@ function validateSession(request, response, next){
 //WARNING, MUST ALWAYS BE CALLED AFTER validateSession
 //in the express next() stack!
 function validateAdminstrator(request, response, next){
-    console.log(request.body.session);
     let type = request.body.session.type;
     userController.isAdministrator(type, (error) => {
         if(error)
@@ -129,12 +128,26 @@ app.post(routes.ADD_RESTAURANT, validateSession, (request, response) => {
 
 app.get(routes.GET_RESTAURANTS, validateSession, (request, response) => {
     let query = request.params.query;
-    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
+    if(!query){
+        restaurantController.getAll((error, restaurants) => {
+            if(error)
+                response.send(getUnSuccessfulResponse(error));
+            else
+                response.send(getSuccessfulResponse(restaurants));
+        });
+    }
+    else
+        response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
 
 app.get(routes.GET_RESTAURANT, validateSession, (request, response) => {
     let id = request.params.id;
-    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
+    restaurantController.get(id, (error, restaurant) => {
+        if(error)
+            response.send(getUnSuccessfulResponse(error));
+        else
+            response.send(getSuccessfulResponse(restaurant));
+    });
 });
 
 app.post(routes.ADD_RESTAURANT_SCORE, validateSession, (request, response) => {
