@@ -1,6 +1,7 @@
 const dataAccess = require('../data.js');
 const errors = dataAccess.config.public.errors;
 const prices = dataAccess.config.public.prices;
+const days = dataAccess.config.public.days;
 const restaurantsCollection = dataAccess.config.private.database.collections.RESTAURANTS;
 const scoresCollection = dataAccess.config.private.database.collections.SCORES;
 const commentsCollection = dataAccess.config.private.database.collections.COMMENTS;
@@ -9,7 +10,7 @@ function getRestaurantName(object){
     if(!object.hasOwnProperty('name'))
         throw errors.INCOMPLETE_JSON;
     else{
-        if(!(object.name instanceof String))
+        if(typeof object.name !== 'string')
             throw errors.INCORRECT_VALUE_TYPE;
         else
             return object.name;
@@ -20,7 +21,7 @@ function getRestaurantType(object){
     if(!object.hasOwnProperty('type'))
         throw errors.INCOMPLETE_JSON;
     else{
-        if(!(object.type instanceof String))
+        if((typeof object.type !== 'string'))
             throw errors.INCORRECT_VALUE_TYPE;
         else
             return object.type;
@@ -30,14 +31,12 @@ function getRestaurantType(object){
 function getRestaurantPrice(object){
     if(!object.hasOwnProperty('price'))
         throw errors.INCOMPLETE_JSON;
-    else{
-        if(!(object.price instanceof String))
-            throw errors.INCORRECT_VALUE_TYPE;
-        else if(!(price in Object.values(prices)))
-            throw errors.UNKNOWN_PRICE;
-        else
-            return object.price;
-    }
+    else if(typeof object.price !== 'string')
+        throw errors.INCORRECT_VALUE_TYPE;
+    else if(!(Object.values(prices).includes(object.price)))
+        throw errors.UNKNOWN_PRICE;
+    else
+        return object.price;
 }
 
 function getRestaurantLocation(object){
@@ -47,21 +46,65 @@ function getRestaurantLocation(object){
         let location = object.location;
         if(!location.hasOwnProperty('latitude') || !location.hasOwnProperty('longitude'))
             throw errors.INCOMPLETE_JSON;
-        if(!(location.latitude instanceof Number) || !(location.longitude instanceof Number))
+        if(typeof location.latitude !== 'number' || typeof location.longitude !== 'number')
             throw errors.INCORRECT_VALUE_TYPE;
         else
             return {"latitude": location.latitude, "longitude": location.longitude};
     }
 }
 
-function getRestaurantContacts(object){
+function getDailySchedule(object){
+    if(!object.hasOwnProperty('start') || !object.hasOwnProperty('end') ||
+       !object.start.hasOwnProperty('hour') || !object.start.hasOwnProperty('minute') ||
+       !object.end.hasOwnProperty('hour') || !object.end.hasOwnProperty('minute'))
+        throw errors.INCOMPLETE_JSON;
+    else{
+        let startHour = object.start.hour;
+        let startMinute = object.start.minute;
+        let endHour = object.end.hour;
+        let endMinute = object.end.minute;
+        if(!(Number.isInteger(startHour)) || !(Number.isInteger(startMinute)) ||
+           !(Number.isInteger(endHour)) || !(Number.isInteger(endMinute)))
+           throw errors.INCORRECT_VALUE_TYPE;
+        else if(startHour < 0 || startHour > 23 || startMinute < 0 || startMinute > 59 || 
+                endHour < 0 || endHour > 23 || endMinute < 0 || endMinute > 59)
+            throw errors.SCHEDULE_OUT_OF_BOUNDS;
+        else
+            return {"start": {"hour": startHour, "minute": startMinute},
+                    "end": {"hour": endHour, "minute": endMinute}};
+    }
+}
+
+function getRestaurantSchedule(object){
     if(!object.hasOwnProperty('schedule'))
         throw errors.INCOMPLETE_JSON;
     else{
-        for(let day in Object.keys(object.schedule)){
-            
-        }
+        let schedule = object.schedule;
+        let newSchedule = {};
+        Object.values(days).forEach((day) => {
+            if(schedule.hasOwnProperty(day))
+                newSchedule[day] = getDailySchedule(schedule[day]);
+        });
+        return newSchedule;
     }
+}
+
+function getRestaurantContacts(object){
+    if(!object.hasOwnProperty('contacts'))
+        throw errors.INCOMPLETE_JSON;
+    if(!(object.contacts instanceof Array))
+        throw errors.INCORRECT_VALUE_TYPE;
+    else{
+        let newContacts = [];
+        object.contacts.forEach((contact) => {
+            if(!contact.hasOwnProperty('name') || !contact.hasOwnProperty('value'))
+                throw errors.INCOMPLETE_JSON;
+            else
+                newContacts.push({"name": contact["name"], "value": contact["value"]});
+        });
+        return newContacts;
+    }
+
 }
 
 //callback(error)
@@ -74,7 +117,7 @@ function add(data, email, callback){
         restaurant.price = getRestaurantPrice(object);
         restaurant.location = getRestaurantLocation(object);
         restaurant.schedule = getRestaurantSchedule(object);
-        retaurant.contacts = getRestaurantContacts(object);
+        restaurant.contacts = getRestaurantContacts(object);
         restaurant.images = [];
         restaurant.added_by = email;
         restaurant.added = Date();
@@ -85,6 +128,7 @@ function add(data, email, callback){
                 callback(null);
         });
     } catch(error) {
+        console.log(error);
         if(error instanceof SyntaxError)
             callback(errors.UNPARSABLE_JSON);
         else

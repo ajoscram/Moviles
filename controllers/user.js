@@ -79,7 +79,7 @@ function fullLogin(email, password, type, callback){
     if(!validType(type))
         callback(errors.UNKNOWN_LOGIN_TYPE, null);
     else{
-        dataAccess.get(usersCollection, {"email": email, deleted: false}, (mongoError, user) => {
+        dataAccess.get(usersCollection, {"email": email, "deleted": false}, (mongoError, user) => {
             if(mongoError)
                 callback(errors.DB_ERROR, null);
             else if(!user)
@@ -123,7 +123,7 @@ function login(session, callback){
                 callback(errors.UNKNOWN_SESSION, null);
             else{
                 let email = result.value.email;
-                let type = result.value.email;
+                let type = result.value.type;
                 addSession(email, type, (mongoError, result) =>{
                     if(mongoError)
                         callback(errors.DB_ERROR, null);

@@ -118,8 +118,13 @@ app.get(routes.USER_FORGOT_PASSWORD, (request, response) => {
 
 app.post(routes.ADD_RESTAURANT, validateSession, (request, response) => {
     let restaurant = request.params.data;
-    let email = request.body.session;
-    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
+    let email = request.body.session.email;
+    restaurantController.add(restaurant, email, (error) => {
+        if(error)
+            response.send(getUnSuccessfulResponse(error));
+        else
+            response.send(getSuccessfulResponse());
+    });
 });
 
 app.get(routes.GET_RESTAURANTS, validateSession, (request, response) => {
@@ -185,7 +190,7 @@ app.all(routes.ANY, (request, response) => {
     response.send(getUnSuccessfulResponse(errors.UNHANDLED_ROUTE));
 });
 
-/*
+
 //finally connect to te database, and after that open the server for requests
 dataAccess.connect((error) => {
     if(error){
@@ -193,9 +198,8 @@ dataAccess.connect((error) => {
         process.exit(1);
     }
     else{
-
         app.listen(port, () => {
             console.log("Listening on port " + port + "...");
         });
     }
-});*/
+});
