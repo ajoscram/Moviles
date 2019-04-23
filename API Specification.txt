@@ -216,7 +216,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
                     name: string,
                     type: string, <- this refers to food type, like fast food or gourmet
                     price: string, <- values restricted to CHEAP, AFFORDABLE, EXPENSIVE
-                    score: double, <- 0 to 5, number
+                    score: double, <- 0 to 5
                     location: {
                         type: "Point", <- LITERALLY the string "Point"
                         coordinates: [longitude, latitude] <- in that order, both doubles
@@ -264,8 +264,8 @@ If this JSON is not found on ANY request of the requests specified below, an err
         location: {
             type: "Point", <- LITERALLY the string "Point"
             coordinates: [longitude, latitude], <- in that order, both numbers
-            maxDistance: int <- specified in meters
-        }
+        },
+        maxDistance: int <- specified in meters
     }
 
     Errors:
@@ -296,7 +296,6 @@ If this JSON is not found on ANY request of the requests specified below, an err
     {
         success: true,
         data: {
-            average: double, <- average score for the restaurant
             scores: [
                 {
                     _id: string,
