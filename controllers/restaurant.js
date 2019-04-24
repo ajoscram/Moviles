@@ -131,6 +131,7 @@ function add(data, email, callback){
         restaurant.images = [];
         restaurant.added_by = email;
         restaurant.added = Date();
+        restaurant.deleted = false;
         dataAccess.add(restaurantsCollection, restaurant, (mongoError, result) => {
             if(mongoError)
                 throw errors.DB_ERROR;
