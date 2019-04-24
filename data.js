@@ -61,7 +61,16 @@ function add(collection, object, callback){
 
 //callback(MongoError, updateWriteOpResult)
 function update(collection, filter, update, callback){
-    database.instance.collection(collection).updateOne(filter, {$set: update}, (error, result) => {
+    database.instance.collection(collection).updateOne(filter, {"$set": update}, (error, result) => {
+        if(error)
+            console.log(error);
+        callback(error, result);
+    });
+}
+
+//callback(MongoError, updateWriteOpResult)
+function addOrUpdate(collection, filter, update, callback){
+    database.instance.collection(collection).updateOne(filter, {"$set": update}, {"upsert":true}, (error, result) => {
         if(error)
             console.log(error);
         callback(error, result);
@@ -71,7 +80,16 @@ function update(collection, filter, update, callback){
 //WARNING! DOES GET FIRST, THEN UPDATE
 //callback(MongoError, findAndModifyWriteOpResult)
 function getAndUpdate(collection, filter, update, callback){
-    database.instance.collection(collection).findOneAndUpdate(filter, {$set: update}, (error, result) => {
+    database.instance.collection(collection).findOneAndUpdate(filter, {"$set": update}, (error, result) => {
+        if(error)
+            console.log(error);
+        callback(error, result);
+    });
+}
+
+//callback(MongoError, number)
+function count(collection, filter, callback){
+    database.instance.collection(collection).countDocuments(filter, (error, result) => {
         if(error)
             console.log(error);
         callback(error, result);
@@ -93,5 +111,7 @@ module.exports = {
     "getAndUpdate": getAndUpdate,
     "query": query,
     "add":add,
+    "addOrUpdate":addOrUpdate,
     "update":update,
+    "count":count
 }

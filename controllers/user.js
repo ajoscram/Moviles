@@ -187,7 +187,8 @@ function validate(session, callback){
     });
 }
 
-function getAll(){
+//callback(error, object)
+function getAll(callback){
     
 }
 

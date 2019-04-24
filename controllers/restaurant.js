@@ -162,13 +162,13 @@ function get(id, callback){
     });
 }
 
-//callback(error, array)
+//callback(error, object)
 function getAll(callback){
     dataAccess.query(restaurantsCollection, {}, (mongoError, restaurants) => {
         if(mongoError)
             callback(errors.DB_ERROR, null);
         else
-            callback(null, restaurants);
+            callback(null, {"restaurants":restaurants});
     });
 }
 
@@ -201,20 +201,114 @@ function del(id){
     
 }
 
-function addScore(id, score, email){
-
+//callback(error)
+function addScore(id, score, email, callback){
+    score = Number(score);
+    if(typeof id !== 'string', typeof email !== 'string', Number.isNaN(score))
+        callback(errors.INCORRECT_VALUE_TYPE);
+    else if(score < 0 || score > 5)
+        callback(error.SCORE_OUT_OF_BOUNDS)
+    else{
+        let _id = dataAccess.getObjectID(id);
+        if(!_id)
+            callback(errors.UNKNOWN_RESTAURANT_ID);
+        else{
+            dataAccess.get(restaurantsCollection, {"_id": _id}, (mongoError, restaurant) => {
+                if(mongoError)
+                    callback(errors.DB_ERROR);
+                if(!restaurant)
+                    callback(errors.UNKNOWN_RESTAURANT_ID);
+                else{
+                    dataAccess.count(scoresCollection, {"restaurant_id": _id}, (mongoError, numberOfScores) => {
+                        if(mongoError)
+                            callback(errors.DB_ERROR);
+                        else{
+                            let average = restaurant.score + ((score - restaurant.score) / (numberOfScores + 1));
+                            dataAccess.update(restaurantsCollection, {"_id": _id}, {"score": average}, (mongoError, restaurant) => {
+                                if(mongoError)
+                                    callback(errors.DB_ERROR);
+                                if(!restaurant)
+                                callback(errors.UNKNOWN_RESTAURANT_ID);
+                                else{
+                                    let scoreObject = {
+                                        "restaurant_id": _id,
+                                        "score": score,
+                                        "added_by": email,
+                                        "added": Date()
+                                    };
+                                    dataAccess.addOrUpdate(scoresCollection, {"restaurant_id": _id, "added_by": email}, scoreObject, (mongoError, result) => {
+                                        if(mongoError)
+                                            callback(errors.DB_ERROR);
+                                        else
+                                            callback(null);
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    }
 }
 
-function getScores(id){
-
+//callback(error, object)
+function getScores(id, callback){
+    let _id = dataAccess.getObjectID(id);
+    if(!_id)
+        callback(errors.UNKNOWN_RESTAURANT_ID, null);
+    else{
+        dataAccess.query(scoresCollection, {"restaurant_id": _id}, (mongoError, scores) => {
+            if(mongoError)
+                callback(errors.DB_ERROR, null);
+            else
+                callback(null, {"scores": scores});
+        });
+    }
 }
 
-function addComment(id, text, email){
-
+//callback(error)
+function addComment(id, text, email, callback){
+    let _id = dataAccess.getObjectID(id);
+    if(!_id)
+        callback(errors.UNKNOWN_RESTAURANT_ID);
+    else{
+        dataAccess.get(restaurantsCollection, {"_id": _id}, (mongoError, restaurant) => {
+            if(mongoError)
+                callback(errors.DB_ERROR);
+            else if(!restaurant)
+                callback(errors.UNKNOWN_RESTAURANT_ID);
+            else{
+                let comment = {
+                    "restaurant_id": _id,
+                    "text": text,
+                    "added_by": email,
+                    "added": Date()
+                };
+                dataAccess.add(commentsCollection, comment, (mongoError, result) => {
+                    if(mongoError)
+                        callback(errors.DB_ERROR);
+                    else
+                        callback(null);
+                });
+            }
+        });
+    }
 }
 
-function getComments(id){
-
+//callback(error, object)
+function getComments(id, callback){
+    let _id = dataAccess.getObjectID(id);
+    if(!_id)
+        callback(errors.UNKNOWN_RESTAURANT_ID, null);
+    else{
+        dataAccess.query(commentsCollection, {"restaurant_id": _id}, (mongoError, comments) => {
+            if(mongoError)
+                callback(errors.DB_ERROR, null);
+            else
+                callback(null, {"comments": comments});
+        });
+    }
 }
 
 module.exports = {

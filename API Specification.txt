@@ -198,7 +198,8 @@ If this JSON is not found on ANY request of the requests specified below, an err
             ],
             images: [string], <- Image URLs hosted somewhere
             added_by: string, <- email of adder
-            added: date
+            added: date,
+            deleted: boolean
         }
     }
 
@@ -211,7 +212,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
     GET /restaurants/all/:query?
     {
         success: true,
-        data: {
+        data: { 
             restaurants: [
                 {
                     _id: string,
@@ -292,6 +293,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
         SCORE_OUT_OF_BOUNDS (the score is lower than 0 or greater than 5)
+        INCORRECT_VALUE_TYPE (a value in the key:value pairs does not hold the correct type)
 
 - getting all restaurant scores
     GET /restaurants/:id/scores
@@ -301,9 +303,10 @@ If this JSON is not found on ANY request of the requests specified below, an err
             scores: [
                 {
                     _id: string,
+                    restaurant_id: string,
+                    score: int, <- constrained from 0 to 5
                     added_by: string, <- email of adder
                     added: date
-                    score: int <- constrained from 0 to 5
                 },
                 ...n scores
             ]
@@ -330,7 +333,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
 
 - adding a comment under a restaurant
-    POST restaurants/:id/comments/:text
+    POST /restaurants/:id/comments/:text
     {
         success: true
     }
@@ -343,16 +346,17 @@ If this JSON is not found on ANY request of the requests specified below, an err
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
 
 - getting a restaurant's comments
-    GET restaurants/:id/comments
+    GET /restaurants/:id/comments
     {
         success: true,
         data: {
             comments: [
                 {
-                    _id: string
+                    _id: string,
+                    restaurant_id: string,
+                    text: string,
                     added_by: string, <- email of adder
                     added: date
-                    text: string
                 },
                 ...n comments
             ]
@@ -363,6 +367,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
         DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
+        INCORRECT_VALUE_TYPE (a value in the key:value pairs does not hold the correct type)
 
 ----------------------------------------------------------------------------------------------------------------
 From this point on, session tokens handed will be checked for administrative rights. If the account is not an
@@ -392,6 +397,7 @@ administrator and these methods are called an error will be returned.
     It should have have the following structure:
     
     {
+        _id: string
         name: string,
         type: string, <- this refers to food type, like fast food or gourmet
         price: string, <- values restricted to CHEAP, AFFORDABLE, EXPENSIVE
@@ -438,16 +444,18 @@ administrator and these methods are called an error will be returned.
     GET /users/all
     {
         success: true,
-        users:[
-            {
-                _id: string,
-                name: string,
-                email: string,
-                type: string, <- REGULAR or ADMINISTRATOR
-                added: date
-            },
-            ...n users
-        ]
+        data: {
+            users:[
+                {
+                    _id: string,
+                    name: string,
+                    email: string,
+                    type: string, <- REGULAR or ADMINISTRATOR
+                    added: date
+                },
+                ...n users
+            ]
+        }
     }
 
     Errors:

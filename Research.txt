@@ -1,2 +1,0 @@
-mongo "mongodb+srv://maincluster-ifn9g.mongodb.net/test" --username alejandro
-7euccIvyGYOjSIUx

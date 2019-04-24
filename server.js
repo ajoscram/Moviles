@@ -153,13 +153,23 @@ app.get(routes.GET_RESTAURANT, validateSession, (request, response) => {
 app.post(routes.ADD_RESTAURANT_SCORE, validateSession, (request, response) => {
     let id = request.params.id;
     let score = request.params.score;
-    let email = userController.getEmail(request.body.session);
-    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
+    let email = request.body.session.email;
+    restaurantController.addScore(id, score, email, (error) => {
+        if(error)
+            response.send(getUnSuccessfulResponse(error));
+        else
+            response.send(getSuccessfulResponse());
+    });
 });
 
 app.get(routes.GET_RESTAURANT_SCORES, validateSession, (request, response) => {
     let id = request.params.id;
-    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
+    restaurantController.getScores(id, (error, comments) => {
+        if(error)
+            response.send(getUnSuccessfulResponse(error));
+        else
+            response.send(getSuccessfulResponse(comments));
+    });
 });
 
 app.post(routes.ADD_RESTAURANT_IMAGE, validateSession, (request, response) => {
@@ -173,15 +183,26 @@ app.get(routes.GET_RESTAURANT_IMAGES, validateSession, (request, response) => {
 });
 
 app.post(routes.ADD_RESTAURANT_COMMENT, validateSession, (request, response) => {
+    console.log("here!");
     let id = request.params.id;
     let text = request.params.text;
-    let session = request.body.session;
-    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
+    let email = request.body.session.email;
+    restaurantController.addComment(id, text, email, (error) =>{
+        if(error)
+            response.send(getUnSuccessfulResponse(error));
+        else
+            response.send(getSuccessfulResponse());
+    });
 });
 
 app.get(routes.GET_RESTAURANT_COMMENTS, validateSession, (request, response) => {
     let id = request.params.id;
-    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
+    restaurantController.getComments(id, (error, comments) => {
+        if(error)
+            response.send(getUnSuccessfulResponse(error));
+        else
+            response.send(getSuccessfulResponse(comments));
+    });
 });
 
 app.delete(routes.DELETE_RESTAURANT, validateSession, validateAdminstrator, (request, response) => {
