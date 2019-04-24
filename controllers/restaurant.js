@@ -44,12 +44,21 @@ function getRestaurantLocation(object){
         throw errors.INCOMPLETE_JSON;
     else{
         let location = object.location;
-        if(!location.hasOwnProperty('latitude') || !location.hasOwnProperty('longitude'))
+        if(!(location.hasOwnProperty('type')) || !location.hasOwnProperty('coordinates'))
             throw errors.INCOMPLETE_JSON;
-        if(typeof location.latitude !== 'number' || typeof location.longitude !== 'number')
+        else if(location.type !== dataAccess.config.public.POINT)
+            throw errors.LOCATION_TYPE_NOT_POINT;
+        else if(!(location.coordinates instanceof Array))
+            throw errors.INCORRECT_VALUE_TYPE;
+        else if(location.coordinates.length !== 2)
+            throw errors.COORDINATES_OUT_OF_BOUNDS;
+        else if(typeof location.coordinates[0] !== 'number' || typeof location.coordinates[1] !== 'number')
             throw errors.INCORRECT_VALUE_TYPE;
         else
-            return {"latitude": location.latitude, "longitude": location.longitude};
+            return {
+                "type": location.type, 
+                "coordinates": [location.coordinates[0], location.coordinates[1]]
+            };
     }
 }
 
@@ -115,6 +124,7 @@ function add(data, email, callback){
         restaurant.name = getRestaurantName(object);
         restaurant.type = getRestaurantType(object);
         restaurant.price = getRestaurantPrice(object);
+        restaurant.score = 0;
         restaurant.location = getRestaurantLocation(object);
         restaurant.schedule = getRestaurantSchedule(object);
         restaurant.contacts = getRestaurantContacts(object);
@@ -215,7 +225,6 @@ module.exports = {
     "delete": del,
     "addScore": addScore,
     "getScores":getScores,
-    "getImageURLs":getImageURLs,
     "addComment":addComment,
     "getComments":getComments
 }

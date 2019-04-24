@@ -158,6 +158,8 @@ If this JSON is not found on ANY request of the requests specified below, an err
         INCOMPLETE_JSON (the JSON is missing a field)
         INCORRECT_VALUE_TYPE (a value in the key:value pairs does not hold the correct type)
         UNKNOWN_PRICE (the price isn't CHEAP, AFFORDABLE or EXPENSIVE)
+        COORDINATES_OUT_OF_BOUNDS (The coordinates array has more or less than two numbers)
+        LOCATION_TYPE_NOT_POINT (the location type is not the string "point")
         SCHEDULE_OUT_OF_BOUNDS (the schedule has an entry where the hours > 23 or < 0, or the minutes > 59 or < 0)
 
 - get single restaurant:
@@ -265,7 +267,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
             type: "Point", <- LITERALLY the string "Point"
             coordinates: [longitude, latitude], <- in that order, both numbers
         },
-        maxDistance: int <- specified in meters
+        maxDistance: int <- specified in meters. Defaults to 10000 (10km)
     }
 
     Errors:

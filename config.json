@@ -46,6 +46,7 @@
         }
     },
     "public": {
+        "POINT":"Point",
         "users": {
             "ADMINISTRATOR":"ADMINISTRATOR",
             "REGULAR":"REGULAR"
@@ -82,7 +83,8 @@
             "UNKNOWN_PRICE":"UNKNOWN_PRICE",
             "SCORE_OUT_OF_BOUNDS":"SCORE_OUT_OF_BOUNDS",
             "SCHEDULE_OUT_OF_BOUNDS":"SCHEDULE_OUT_OF_BOUNDS",
-            "SCHEDULE_UNKNOWN_DAY":"SCHEDULE_UNKNOWN_DAY",
+            "COORDINATES_OUT_OF_BOUNDS": "COORDINATES_OUT_OF_BOUNDS",
+            "LOCATION_TYPE_NOT_POINT":"LOCATION_TYPE_NOT_POINT",
             "USER_IS_NOT_ADMINISTRATOR":"USER_IS_NOT_ADMINISTRATOR"
         }
     }
