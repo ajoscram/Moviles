@@ -104,7 +104,7 @@ Errors look like this:
         MAIL_PASSWORD_ERROR (error while sending the password to the user)
 
 ----------------------------------------------------------------------------------------------------------------
-From this point on, every single one of these methods requires a session token to be given via the HTML's body.
+From this point on, every single non-GET request requires a session token to be given via the HTML's body.
 It must be embedded in a JSON, which looks like this:
 {
     session: string
@@ -325,12 +325,13 @@ If this JSON is not found on ANY request of the requests specified below, an err
         success: true
     }
 
-    The image parameter MUST BE DEFINED LATER ON.
+    The image parameter is a URL Safe Base64 string of the image file.
     
     Errors:
         DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
+        IMAGE_ERROR (The image does not represent a URL Safe Base64 string of an image, and could not be processed)
 
 - adding a comment under a restaurant
     POST /restaurants/:id/comments/:text
