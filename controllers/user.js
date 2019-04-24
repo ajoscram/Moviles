@@ -1,5 +1,5 @@
-const dataAccess = require('../data.js');
-const mailer = require('../email.js');
+const dataAccess = require('../wrappers/data.js');
+const mailer = require('../wrappers/email.js');
 
 const types = dataAccess.config.public.users; //user types
 const errors = dataAccess.config.public.errors;

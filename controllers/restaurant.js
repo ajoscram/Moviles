@@ -1,5 +1,5 @@
-const dataAccess = require('../data.js');
-const imgur = require('../imgur.js');
+const dataAccess = require('../wrappers/data.js');
+const imgur = require('../wrappers/imgur.js');
 const errors = dataAccess.config.public.errors;
 const prices = dataAccess.config.public.prices;
 const days = dataAccess.config.public.days;
