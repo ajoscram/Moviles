@@ -116,7 +116,7 @@ function login(session, callback){
     else{
         let sessionFilter = {"_id": _id, "open": true};
         let sessionUpdate = {"open": false, "dateClosed": Date()};
-        dataAccess.getAndUpdate(sessionsCollection, sessionFilter, sessionUpdate, (mongoError, result) => {
+        dataAccess.getAndUpdate(sessionsCollection, sessionFilter, {"$set": sessionUpdate}, (mongoError, result) => {
             if(mongoError)
                 callback(errors.DB_ERROR, null);
             else if(!result.value)
@@ -143,7 +143,7 @@ function logout(session, callback){
     else{
         let sessionFilter = {"_id": _id, "open": true};
         let sessionUpdate = {"open": false, "dateClosed": Date()};
-        dataAccess.update(sessionsCollection, sessionFilter, sessionUpdate, (mongoError, result) => {
+        dataAccess.update(sessionsCollection, sessionFilter, {"$set": sessionUpdate}, (mongoError, result) => {
             if(mongoError)
                 callback(errors.DB_ERROR);
             else if(result.matchedCount == 0)

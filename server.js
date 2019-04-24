@@ -1,7 +1,6 @@
 //lib imports
 const express = require('express');
 const bodyParser = require('body-parser');
-const fs = require('fs');
 
 //local requires and imports
 const userController = require('./controllers/user.js');
@@ -145,8 +144,14 @@ app.get(routes.GET_RESTAURANTS, (request, response) => {
                 response.send(getSuccessfulResponse(restaurants));
         });
     }
-    else
-        response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
+    else{
+        restaurantController.query(query, (error, restaurants) => {
+            if(error)
+                response.send(getUnSuccessfulResponse(error));
+            else
+                response.send(getSuccessfulResponse(restaurants));
+        });
+    }
 });
 
 app.get(routes.GET_RESTAURANT, (request, response) => {
@@ -182,13 +187,14 @@ app.get(routes.GET_RESTAURANT_SCORES, (request, response) => {
 });
 
 app.post(routes.ADD_RESTAURANT_IMAGE, validateSession, (request, response) => {
-    //TODO: FINISH THIS API CALL
-    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
-});
-
-app.get(routes.GET_RESTAURANT_IMAGES, (request, response) => {
     let id = request.params.id;
-    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
+    let image = request.params.image;
+    restaurantController.addImage(id, (error) => {
+        if(error)
+            response.send(getUnSuccessfulResponse(error));
+        else
+            response.send(getSuccessfulResponse());
+    });
 });
 
 app.post(routes.ADD_RESTAURANT_COMMENT, validateSession, (request, response) => {
@@ -216,7 +222,12 @@ app.get(routes.GET_RESTAURANT_COMMENTS, (request, response) => {
 
 app.delete(routes.DELETE_RESTAURANT, validateSession, validateAdminstrator, (request, response) => {
     let id = request.params.id;
-    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
+    restaurantController.delete(id, (error) => {
+        if(error)
+            response.send(getUnSuccessfulResponse(error));
+        else
+            response.send(getSuccessfulResponse());
+    });
 });
 
 app.put(routes.UPDATE_RESTAURANT, validateSession, validateAdminstrator, (request, response) => {

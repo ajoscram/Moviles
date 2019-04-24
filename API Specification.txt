@@ -275,10 +275,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
         DB_ERROR (this error is returned when request could not be handled in time or at all)
         UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
         UNPARSABLE_JSON (the string received could not be parsed to a JSON)
-        INCORRECT_VALUE_TYPE (a value in the key:value pairs does not hold the correct type)
         UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
-        UNKNOWN_PRICE (the price isn't CHEAP, AFFORDABLE or EXPENSIVE)
-        SCORE_OUT_OF_BOUNDS (the score is lower than 0 or greater than 5)
 
 - adding a restaurant's score:
     POST /restaurants/:id/scores/:score
@@ -398,11 +395,9 @@ administrator and these methods are called an error will be returned.
     It should have have the following structure:
     
     {
-        _id: string
         name: string,
         type: string, <- this refers to food type, like fast food or gourmet
         price: string, <- values restricted to CHEAP, AFFORDABLE, EXPENSIVE
-        score: double, <- 0 to 5, up to 2 decimals
         location: {
             type: "Point", <- LITERALLY the string "Point"
             coordinates: [longitude, latitude] <- in that order, both numbers

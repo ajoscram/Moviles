@@ -41,7 +41,7 @@ function get(collection, filter, callback){
     });
 }
 
-//callback(mongoError, object)
+//callback(mongoError, array)
 function query(collection, filter, callback){
     database.instance.collection(collection).find(filter).toArray((error, result) => {
         if(error)
@@ -60,8 +60,8 @@ function add(collection, object, callback){
 }
 
 //callback(MongoError, updateWriteOpResult)
-function update(collection, filter, update, callback){
-    database.instance.collection(collection).updateOne(filter, {"$set": update}, (error, result) => {
+function update(collection, filter, operations, callback){
+    database.instance.collection(collection).updateOne(filter, operations, (error, result) => {
         if(error)
             console.log(error);
         callback(error, result);
@@ -69,8 +69,8 @@ function update(collection, filter, update, callback){
 }
 
 //callback(MongoError, updateWriteOpResult)
-function addOrUpdate(collection, filter, update, callback){
-    database.instance.collection(collection).updateOne(filter, {"$set": update}, {"upsert":true}, (error, result) => {
+function addOrUpdate(collection, filter, operations, callback){
+    database.instance.collection(collection).updateOne(filter, operations, {"upsert":true}, (error, result) => {
         if(error)
             console.log(error);
         callback(error, result);
@@ -79,8 +79,8 @@ function addOrUpdate(collection, filter, update, callback){
 
 //WARNING! DOES GET FIRST, THEN UPDATE
 //callback(MongoError, findAndModifyWriteOpResult)
-function getAndUpdate(collection, filter, update, callback){
-    database.instance.collection(collection).findOneAndUpdate(filter, {"$set": update}, (error, result) => {
+function getAndUpdate(collection, filter, operations, callback){
+    database.instance.collection(collection).findOneAndUpdate(filter, operations, (error, result) => {
         if(error)
             console.log(error);
         callback(error, result);

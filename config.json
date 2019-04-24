@@ -36,7 +36,6 @@
             "ADD_RESTAURANT_SCORE":"/restaurants/:id/scores/:score",
             "GET_RESTAURANT_SCORES":"/restaurants/:id/scores",
             "ADD_RESTAURANT_IMAGE":"/restaurants/:id/images/:image",
-            "GET_RESTAURANT_IMAGES":"/restaurants/:id/images",
             "ADD_RESTAURANT_COMMENT":"/restaurants/:id/comments/:text",
             "GET_RESTAURANT_COMMENTS":"/restaurants/:id/comments",
             "DELETE_RESTAURANT":"/restaurants/:id",
@@ -85,6 +84,7 @@
             "SCHEDULE_OUT_OF_BOUNDS":"SCHEDULE_OUT_OF_BOUNDS",
             "COORDINATES_OUT_OF_BOUNDS": "COORDINATES_OUT_OF_BOUNDS",
             "LOCATION_TYPE_NOT_POINT":"LOCATION_TYPE_NOT_POINT",
+            "IMAGE_ERROR":"IMAGE_ERROR",
             "USER_IS_NOT_ADMINISTRATOR":"USER_IS_NOT_ADMINISTRATOR"
         }
     }

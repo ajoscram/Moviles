@@ -1,4 +1,5 @@
 const dataAccess = require('../data.js');
+const imgur = require('../imgur.js');
 const errors = dataAccess.config.public.errors;
 const prices = dataAccess.config.public.prices;
 const days = dataAccess.config.public.days;
@@ -171,23 +172,49 @@ function getAll(callback){
     });
 }
 
+
+
+function get_id(id){
+    let _id = dataAccess.getObjectID(id);
+    if(!_id)
+        throw errors.UNKNOWN_RESTAURANT_ID;
+}
+
+function getLocationQuery(location, maxDistance){
+    return {"$nearSphere": {"$geometry": location }, "$minDistance": 0, "$maxDistance": maxDistance};
+}
+
 //callback(error, array)
 function query(query, callback){
     try{
         let json = JSON.parse(query);
-        
+        json._id = get_id(json._id);
+        if(json.location && json.maxDistance){
+            json.location = getRestaurantLocation(json, maxDistance);
+            json.location = getLocationQuery(json.location, json.maxDistance);
+            delete json.maxDistance;
+        }
+        dataAccess.query(restaurantsCollection, json, (mongoError, restaurants) => {
+            if(mongoError)
+                throw errors.DB_ERROR;
+            else
+            callback(null, {"restaurants":restaurants});
+        });
     } catch(error) {
         if(error instanceof SyntaxError)
-            callback(errors.UNPARSABLE_JSON);
+            callback(errors.UNPARSABLE_JSON, null);
         else
-            callback(error);
+            callback(error, null);
     }
 }
 
 function update(id, data){
     try{
         let json = JSON.parse(data);
-        //missing code!
+        let _id = dataAccess.getObjectID(id);
+        if(!_id)
+            throw errors.UNKNOWN_RESTAURANT_ID;
+        
     } catch(error) {
         if(error instanceof SyntaxError)
             throw errors.UNPARSABLE_JSON;
@@ -196,8 +223,22 @@ function update(id, data){
     }
 }
 
-function del(id){
-    
+//callback(error)
+function del(id, callback){
+    let _id = dataAccess.getObjectID(id);
+    if(!_id)
+        callback(errors.UNKNOWN_RESTAURANT_ID);
+    else{
+        dataAccess.update(restaurantsCollection, {"_id":id}, {"$set": {"deleted": true}}, (mongoError, result) => {
+            if(mongoError)
+                callback(errors.DB_ERROR);
+            else if(result.matchedCount == 0)
+                callback(errors.UNKNOWN_RESTAURANT_ID);
+            else{
+                callback(null);
+            }
+        });
+    }
 }
 
 //callback(error)
@@ -206,7 +247,7 @@ function addScore(id, score, email, callback){
     if(typeof id !== 'string', typeof email !== 'string', Number.isNaN(score))
         callback(errors.INCORRECT_VALUE_TYPE);
     else if(score < 0 || score > 5)
-        callback(error.SCORE_OUT_OF_BOUNDS)
+        callback(errors.SCORE_OUT_OF_BOUNDS)
     else{
         let _id = dataAccess.getObjectID(id);
         if(!_id)
@@ -223,7 +264,7 @@ function addScore(id, score, email, callback){
                             callback(errors.DB_ERROR);
                         else{
                             let average = restaurant.score + ((score - restaurant.score) / (numberOfScores + 1));
-                            dataAccess.update(restaurantsCollection, {"_id": _id}, {"score": average}, (mongoError, restaurant) => {
+                            dataAccess.update(restaurantsCollection, {"_id": _id}, {"$set": {"score": average}}, (mongoError, restaurant) => {
                                 if(mongoError)
                                     callback(errors.DB_ERROR);
                                 if(!restaurant)
@@ -235,7 +276,7 @@ function addScore(id, score, email, callback){
                                         "added_by": email,
                                         "added": Date()
                                     };
-                                    dataAccess.addOrUpdate(scoresCollection, {"restaurant_id": _id, "added_by": email}, scoreObject, (mongoError, result) => {
+                                    dataAccess.addOrUpdate(scoresCollection, {"restaurant_id": _id, "added_by": email}, {"$set": scoreObject}, (mongoError, result) => {
                                         if(mongoError)
                                             callback(errors.DB_ERROR);
                                         else
@@ -310,6 +351,30 @@ function getComments(id, callback){
     }
 }
 
+//callback(error)
+function addImage(id, image, callback){
+    let _id = dataAccess.getObjectID(id);
+    if(!_id)
+        callback(errors.UNKNOWN_RESTAURANT_ID, null);
+    else{
+        imgur.upload(image, (error, string) => {
+            if(error)
+                callback(errors.IMAGE_ERROR);
+            else{
+                dataAccess.update(restaurantsCollection, {"_id":id}, {"$push": {"images": string}}, (mongoError, result) => {
+                    if(mongoError)
+                        callback(errors.DB_ERROR);
+                    else if(result.matchedCount == 0)
+                        callback(errors.UNKNOWN_RESTAURANT_ID);
+                    else{
+                        callback(null);
+                    }
+                });
+            }
+        });
+    }
+}
+
 module.exports = {
     "add": add,
     "get": get,
@@ -320,5 +385,6 @@ module.exports = {
     "addScore": addScore,
     "getScores":getScores,
     "addComment":addComment,
-    "getComments":getComments
+    "getComments":getComments,
+    "addImage": addImage
 }
