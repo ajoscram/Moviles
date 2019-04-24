@@ -189,7 +189,12 @@ function validate(session, callback){
 
 //callback(error, object)
 function getAll(callback){
-    
+    dataAccess.query(usersCollection, {}, (mongoError, usersArray) => {
+        if(mongoError)
+            callback(errors.DB_ERROR, null);
+        else
+            callback(null, {"users": usersArray});
+    });
 }
 
 module.exports = {

@@ -105,6 +105,15 @@ app.delete(routes.SESSION_LOGOUT, (request, response) => {
     });
 });
 
+app.get(routes.GET_USERS, validateSession, validateAdminstrator, (request, response) => {
+    userController.getAll((error, users) => {
+        if(error)
+            response.send(getUnSuccessfulResponse(error));
+        else
+            response.send(getSuccessfulResponse(users));
+    });
+});
+
 app.get(routes.USER_FORGOT_PASSWORD, (request, response) => {
     let email = request.params.email;
     userController.sendPassword(email, (error) => {
@@ -126,7 +135,7 @@ app.post(routes.ADD_RESTAURANT, validateSession, (request, response) => {
     });
 });
 
-app.get(routes.GET_RESTAURANTS, validateSession, (request, response) => {
+app.get(routes.GET_RESTAURANTS, (request, response) => {
     let query = request.params.query;
     if(!query){
         restaurantController.getAll((error, restaurants) => {
@@ -140,7 +149,7 @@ app.get(routes.GET_RESTAURANTS, validateSession, (request, response) => {
         response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
 
-app.get(routes.GET_RESTAURANT, validateSession, (request, response) => {
+app.get(routes.GET_RESTAURANT, (request, response) => {
     let id = request.params.id;
     restaurantController.get(id, (error, restaurant) => {
         if(error)
@@ -162,7 +171,7 @@ app.post(routes.ADD_RESTAURANT_SCORE, validateSession, (request, response) => {
     });
 });
 
-app.get(routes.GET_RESTAURANT_SCORES, validateSession, (request, response) => {
+app.get(routes.GET_RESTAURANT_SCORES, (request, response) => {
     let id = request.params.id;
     restaurantController.getScores(id, (error, comments) => {
         if(error)
@@ -177,7 +186,7 @@ app.post(routes.ADD_RESTAURANT_IMAGE, validateSession, (request, response) => {
     response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
 
-app.get(routes.GET_RESTAURANT_IMAGES, validateSession, (request, response) => {
+app.get(routes.GET_RESTAURANT_IMAGES, (request, response) => {
     let id = request.params.id;
     response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
@@ -195,7 +204,7 @@ app.post(routes.ADD_RESTAURANT_COMMENT, validateSession, (request, response) => 
     });
 });
 
-app.get(routes.GET_RESTAURANT_COMMENTS, validateSession, (request, response) => {
+app.get(routes.GET_RESTAURANT_COMMENTS, (request, response) => {
     let id = request.params.id;
     restaurantController.getComments(id, (error, comments) => {
         if(error)
@@ -213,10 +222,6 @@ app.delete(routes.DELETE_RESTAURANT, validateSession, validateAdminstrator, (req
 app.put(routes.UPDATE_RESTAURANT, validateSession, validateAdminstrator, (request, response) => {
     let id = request.params.id;
     let data = request.params.data;
-    response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
-});
-
-app.get(routes.GET_USERS, validateSession, validateAdminstrator, (request, response) => {
     response.send(getUnSuccessfulResponse(errors.NOT_IMPLEMENTED_YET));
 });
 

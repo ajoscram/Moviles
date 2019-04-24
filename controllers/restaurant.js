@@ -139,7 +139,6 @@ function add(data, email, callback){
                 callback(null);
         });
     } catch(error) {
-        console.log(error);
         if(error instanceof SyntaxError)
             callback(errors.UNPARSABLE_JSON);
         else

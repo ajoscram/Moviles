@@ -1,1 +1,3 @@
 {"name":"Taco Bell","type":"Fast Food","price":"AFFORDABLE","location":{"type":"Point", "coordinates":[34.1234, -10.234]},"schedule":{"MONDAY":{"start":{"hour":0,"minute":0},"end":{"hour":23,"minute":59}}},"contacts":[{"name":"Phone","value":"12345678"},{"name":"Facebook","value":"Taco Bell CR"}]}
+{"name" : "Alejandrito Schmidt", "email" : "ajoscram@hotmail.com", "password" : "12345", "type" : "ADMINISTRATOR", "added" : "Mon Apr 22 2019 15:39:59 GMT-0600 (Central Standard Time)", "deleted" : false}
+{ "email" : "ajoscram@hotmail.com", "type" : "ADMINISTRATOR", "open" : true, "dateOpened" : "Tue Apr 23 2019 20:35:49 GMT+0000 (Coordinated Universal Time)", "dateClosed" : null }
