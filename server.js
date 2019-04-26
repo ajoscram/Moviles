@@ -198,7 +198,6 @@ app.post(routes.ADD_RESTAURANT_IMAGE, validateSession, (request, response) => {
 });
 
 app.post(routes.ADD_RESTAURANT_COMMENT, validateSession, (request, response) => {
-    console.log("here!");
     let id = request.params.id;
     let text = request.params.text;
     let email = request.body.session.email;
