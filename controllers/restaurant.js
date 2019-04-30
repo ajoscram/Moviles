@@ -274,7 +274,7 @@ function addScore(id, score, email, callback){
                                 if(mongoError)
                                     callback(errors.DB_ERROR);
                                 if(!restaurant)
-                                callback(errors.UNKNOWN_RESTAURANT_ID);
+                                    callback(errors.UNKNOWN_RESTAURANT_ID);
                                 else{
                                     let scoreObject = {
                                         "restaurant_id": _id,
@@ -367,7 +367,6 @@ function addImage(id, image, callback){
             if(error)
                 callback(errors.IMAGE_ERROR);
             else{
-                console.log(url);
                 dataAccess.update(restaurantsCollection, {"_id": _id}, {"$push": {"images": url}}, (mongoError, result) => {
                     if(mongoError)
                         callback(errors.DB_ERROR);

@@ -242,13 +242,10 @@ app.all(routes.ANY, (request, response) => {
 
 //finally connect to te database, and after that open the server for requests
 dataAccess.connect((error) => {
-    if(error){
-        console.log(error);
+    if(error)
         process.exit(1);
-    }
-    else{
-        app.listen(port, () => {
+    else
+        app.listen(port, () => { 
             console.log("Listening on port " + port + "...");
         });
-    }
 });

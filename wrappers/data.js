@@ -21,8 +21,10 @@ function connect(callback){
         console.log('Connecting to the database...');
         const client = new MongoClient(database.url, database.options);
         client.connect(error => {
-            if(error)
+            if(error){
+                console.log(error);
                 callback(error);
+            }
             else{
                 console.log('Connected!');
                 database.instance = client.db(database.name);
