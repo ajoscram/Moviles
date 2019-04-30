@@ -1,3 +1,3 @@
 # RESTaurantes
 
-App móvil y backoffice web para agregar y encontrar restaurantes.
+Servidor web para agregar y encontrar restaurantes.
