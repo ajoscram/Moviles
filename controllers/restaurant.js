@@ -178,22 +178,28 @@ function get_id(id){
     let _id = dataAccess.getObjectID(id);
     if(!_id)
         throw errors.UNKNOWN_RESTAURANT_ID;
+    return _id;
 }
 
 function getLocationQuery(location, maxDistance){
-    return {"$nearSphere": {"$geometry": location }, "$minDistance": 0, "$maxDistance": maxDistance};
+    if(maxDistance)
+        return {"$nearSphere": {"$geometry": location }, "$minDistance": 0, "$maxDistance": maxDistance};
+    else
+        return {"$nearSphere": {"$geometry": location }, "$minDistance": 0, "$maxDistance": 10000};
 }
 
 //callback(error, array)
 function query(query, callback){
     try{
         let json = JSON.parse(query);
-        json._id = get_id(json._id);
-        if(json.location && json.maxDistance){
-            json.location = getRestaurantLocation(json, maxDistance);
+        if(json._id)
+            json._id = get_id(json._id);
+        if(json.location){
+            json.location = getRestaurantLocation(json);
             json.location = getLocationQuery(json.location, json.maxDistance);
             delete json.maxDistance;
         }
+        console.log(json);
         dataAccess.query(restaurantsCollection, json, (mongoError, restaurants) => {
             if(mongoError)
                 throw errors.DB_ERROR;
@@ -203,8 +209,10 @@ function query(query, callback){
     } catch(error) {
         if(error instanceof SyntaxError)
             callback(errors.UNPARSABLE_JSON, null);
-        else
+        else{
+            console.log(error);
             callback(error, null);
+        }
     }
 }
 
