@@ -31,8 +31,8 @@ function getUnSuccessfulResponse(error){
 
 //NOTE: CHANGES THE request.body.session to a session object 
 function validateSession(request, response, next){
+    console.log(request.body);
     let session = request.body.session;
-    console.log(session);
     userController.validate(session, (error, sessionObject) => {
         if(error)
             response.send(getUnSuccessfulResponse(error));
