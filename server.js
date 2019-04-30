@@ -31,7 +31,6 @@ function getUnSuccessfulResponse(error){
 
 //NOTE: CHANGES THE request.body.session to a session object 
 function validateSession(request, response, next){
-    console.log(request.body);
     let session = request.body.session;
     userController.validate(session, (error, sessionObject) => {
         if(error)
@@ -189,8 +188,8 @@ app.get(routes.GET_RESTAURANT_SCORES, (request, response) => {
 
 app.post(routes.ADD_RESTAURANT_IMAGE, validateSession, (request, response) => {
     let id = request.params.id;
-    let image = request.params.image;
-    restaurantController.addImage(id, (error) => {
+    let image = request.body.image;
+    restaurantController.addImage(id, image, (error) => {
         if(error)
             response.send(getUnSuccessfulResponse(error));
         else

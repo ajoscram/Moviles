@@ -266,7 +266,7 @@ If this JSON is not found on ANY request of the requests specified below, an err
         score: int, <- 0 to 5
         location: {
             type: "Point", <- LITERALLY the string "Point"
-            coordinates: [longitude, latitude], <- in that order, both numbers
+            coordinates: [longitude, latitude] <- in that order, both numbers
         },
         maxDistance: int <- specified in meters. Defaults to 10000 (10km)
     }
@@ -317,12 +317,16 @@ If this JSON is not found on ANY request of the requests specified below, an err
 
 
 - adding a restaurant's image:
-    POST /restaurants/:id/images/:image
+    POST /restaurants/:id/images
     {
         success: true
     }
 
-    The image parameter is a URL Safe Base64 string of the image file.
+    The image is passed as a Base64 string in the request's JSON body under the key "image". The whole body should look like this:
+    {
+        "session": string, <- the session string every POST request has
+        "image": string <- put the raw Base64 image here
+    }
     
     Errors:
         DB_ERROR (this error is returned when request could not be handled in time or at all)

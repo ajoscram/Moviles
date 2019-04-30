@@ -183,9 +183,9 @@ function get_id(id){
 
 function getLocationQuery(location, maxDistance){
     if(maxDistance)
-        return {"$nearSphere": {"$geometry": location }, "$minDistance": 0, "$maxDistance": maxDistance};
+        return {"$nearSphere": {"$geometry": location, "$minDistance": 0, "$maxDistance": maxDistance}};
     else
-        return {"$nearSphere": {"$geometry": location }, "$minDistance": 0, "$maxDistance": 10000};
+        return {"$nearSphere": {"$geometry": location, "$minDistance": 0, "$maxDistance": 10000}};
 }
 
 //callback(error, array)
@@ -195,11 +195,11 @@ function query(query, callback){
         if(json._id)
             json._id = get_id(json._id);
         if(json.location){
+            
             json.location = getRestaurantLocation(json);
             json.location = getLocationQuery(json.location, json.maxDistance);
             delete json.maxDistance;
         }
-        console.log(json);
         dataAccess.query(restaurantsCollection, json, (mongoError, restaurants) => {
             if(mongoError)
                 throw errors.DB_ERROR;
@@ -209,10 +209,8 @@ function query(query, callback){
     } catch(error) {
         if(error instanceof SyntaxError)
             callback(errors.UNPARSABLE_JSON, null);
-        else{
-            console.log(error);
+        else
             callback(error, null);
-        }
     }
 }
 
@@ -365,11 +363,12 @@ function addImage(id, image, callback){
     if(!_id)
         callback(errors.UNKNOWN_RESTAURANT_ID, null);
     else{
-        imgur.upload(image, (error, string) => {
+        imgur.upload(image, (error, url) => {
             if(error)
                 callback(errors.IMAGE_ERROR);
             else{
-                dataAccess.update(restaurantsCollection, {"_id":id}, {"$push": {"images": string}}, (mongoError, result) => {
+                console.log(url);
+                dataAccess.update(restaurantsCollection, {"_id": _id}, {"$push": {"images": url}}, (mongoError, result) => {
                     if(mongoError)
                         callback(errors.DB_ERROR);
                     else if(result.matchedCount == 0)
