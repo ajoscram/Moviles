@@ -176,6 +176,17 @@ app.post(routes.ADD_RESTAURANT_SCORE, validateSession, (request, response) => {
     });
 });
 
+app.get(routes.GET_RESTAURANT_SCORE, (request, response) =>{
+    let id = request.params.id;
+    let email = request.params.email;
+    restaurantController.getScore(id, email, (error, score) => {
+        if(error)
+            response.send(getUnSuccessfulResponse(error));
+        else
+            response.send(getSuccessfulResponse(score));
+    });
+});
+
 app.get(routes.GET_RESTAURANT_SCORES, (request, response) => {
     let id = request.params.id;
     restaurantController.getScores(id, (error, comments) => {

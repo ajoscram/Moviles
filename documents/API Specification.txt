@@ -292,6 +292,27 @@ If this JSON is not found on ANY request of the requests specified below, an err
         SCORE_OUT_OF_BOUNDS (the score is lower than 0 or greater than 5)
         INCORRECT_VALUE_TYPE (a value in the key:value pairs does not hold the correct type)
 
+- getting a restaurant's score by user's email:
+    GET /restaurants/:id/scores/:email
+    {
+        success: true,
+        data: {
+            score: {
+                _id: string,
+                restaurant_id: string,
+                score: int, <- constrained from 0 to 5
+                added_by: string, <- email of adder
+                added: date
+            }
+        }
+    }
+    
+    Errors:
+        DB_ERROR (this error is returned when request could not be handled in time or at all)
+        UNKNOWN_SESSION (the session token provided in the HTML's body is not currently used in an active session)
+        UNKNOWN_RESTAURANT_ID (the restaurant id is not registered in the database)
+        UNKNOWN_EMAIL (email is not registered in the database)
+
 - getting all restaurant scores
     GET /restaurants/:id/scores
     {

@@ -299,6 +299,21 @@ function addScore(id, score, email, callback){
 }
 
 //callback(error, object)
+function getScore(id, email, callback){
+    let _id = dataAccess.getObjectID(id);
+    if(!_id)
+        callback(errors.UNKNOWN_RESTAURANT_ID, null);
+    else{
+        dataAccess.get(scoresCollection, {"restaurant_id": _id, "added_by": email}, (mongoError, score) => {
+            if(mongoError)
+                callback(errors.DB_ERROR, null);
+            else
+                callback(null, {"score": score});
+        });
+    }
+}
+
+//callback(error, object)
 function getScores(id, callback){
     let _id = dataAccess.getObjectID(id);
     if(!_id)
@@ -389,6 +404,7 @@ module.exports = {
     "update": update,
     "delete": del,
     "addScore": addScore,
+    "getScore": getScore,
     "getScores":getScores,
     "addComment":addComment,
     "getComments":getComments,

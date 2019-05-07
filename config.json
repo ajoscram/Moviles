@@ -34,6 +34,7 @@
             "GET_RESTAURANT":"/restaurants/:id",
             "GET_RESTAURANTS":"/restaurants/all/:query?",
             "ADD_RESTAURANT_SCORE":"/restaurants/:id/scores/:score",
+            "GET_RESTAURANT_SCORE":"/restaurants/:id/scores/:email",
             "GET_RESTAURANT_SCORES":"/restaurants/:id/scores",
             "ADD_RESTAURANT_IMAGE":"/restaurants/:id/images",
             "ADD_RESTAURANT_COMMENT":"/restaurants/:id/comments/:text",
