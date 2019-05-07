@@ -14,7 +14,7 @@ const port = process.env.PORT || dataAccess.config.private.server.port;
 
 //express setup
 const app = express();
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb', strict: 'true'}));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //general purpose functions
@@ -245,7 +245,5 @@ dataAccess.connect((error) => {
     if(error)
         process.exit(1);
     else
-        app.listen(port, () => { 
-            console.log("Listening on port " + port + "...");
-        });
+        app.listen(port, () => console.log("Listening on port " + port + "..."));
 });

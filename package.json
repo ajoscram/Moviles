@@ -14,7 +14,6 @@
   "author": "Alejandro Schmidt Ramírez",
   "license": "ISC",
   "dependencies": {
-    "angular": "^1.7.8",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "imgur": "^0.3.1",
