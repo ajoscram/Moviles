@@ -18,11 +18,15 @@ app.use(bodyParser.json({limit: '50mb', strict: 'true'}));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //general purpose functions
-function getSuccessfulResponse(data = null){
+function getSuccessfulResponse(data = null, callback = null){
+    let json;
     if(data)
-        return { "success": true, "data": data };
+        json = { "success": true, "data": data };
     else
-        return { "success": true }
+        json = { "success": true };
+    if(callback)
+        callback(json);
+    return json;
 }
 
 function getUnSuccessfulResponse(error){
@@ -140,16 +144,22 @@ app.get(routes.GET_RESTAURANTS, (request, response) => {
         restaurantController.getAll((error, restaurants) => {
             if(error)
                 response.send(getUnSuccessfulResponse(error));
-            else
-                response.send(getSuccessfulResponse(restaurants));
+            else{
+                getSuccessfulResponse(restaurants, (json) => {
+                    response.send(json);
+                });
+            }
         });
     }
     else{
         restaurantController.query(query, (error, restaurants) => {
             if(error)
                 response.send(getUnSuccessfulResponse(error));
-            else
-                response.send(getSuccessfulResponse(restaurants));
+            else{
+                getSuccessfulResponse(restaurants, (json) => {
+                    response.send(json);
+                });
+            }
         });
     }
 });
